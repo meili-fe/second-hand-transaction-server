@@ -29,7 +29,10 @@ const typeDef = gql`
     状态
     """
     status: String
-    """图片地址"""
+    """
+    图片地址
+    """
+    img_list: String
     """
     创建时间
     """

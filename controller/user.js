@@ -2,13 +2,13 @@ const { query } = require("../db");
 let findUser = function(params) {
   let { name, pageSize, page } = params;
   let offset = (page - 1) * pageSize;
-    let sql = `SELECT user.id,user.user_name,user.user_email,upload.file_name,upload.file_path FROM user  LEFT JOIN upload ON user.id = upload.user_id `;
+  let sql = `SELECT user.id,user.user_name,user.user_email,upload.file_name,upload.file_path FROM user  LEFT JOIN upload ON user.id = upload.user_id `;
 
   if (name) {
     offset = 0;
     sql += ` WHERE user.user_name = ?  `;
   }
-    sql += `ORDER BY user.create_time DESC  limit ${offset},${pageSize} `;
+  sql += `ORDER BY user.create_time DESC  limit ${offset},${pageSize} `;
 
   let value = [name];
   return query(sql, value);

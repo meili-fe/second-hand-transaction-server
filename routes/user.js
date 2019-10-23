@@ -1,5 +1,4 @@
 const router = require("koa-router")();
-const Tips = require("../utils/tips");
 const Utils = require("../utils/index");
 
 const userDTO = require("../controller/user");

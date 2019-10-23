@@ -28,9 +28,9 @@ let findUserByName = function(user_name) {
   return query(sql, value);
 };
 let insertUser = function(params) {
-  let { user_name, user_email } = params;
-  let sql = "INSERT INTO user (user_name,user_email,user_type) VALUES (?,?,?)";
-  let value = [user_name, user_email, 1];
+  let { openId, name } = params;
+  let sql = "INSERT INTO user (open_id,name) VALUES (?,?)";
+  let value = [openId, name];
   return query(sql, value);
 };
 let deleteUserById = function(params) {

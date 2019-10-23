@@ -4,10 +4,13 @@ const Utils = require("../utils/index");
 
 const userDTO = require("../controller/user");
 
-//小程序前端——获取用户信息
-router.post("/user", async (ctx, next) => {
+//小程序前端——登陆获取用户信息
+router.post("/login", async (ctx, next) => {
   const userInfo = await Utils.getUserInfo(ctx.request.body.code);
-  // 存库 key， openid
+  // session key， openid
+  ctx.session.session_key = userInfo.key;
+  ctx.session.openid = userInfo.openid;
+  userDTO.insertUser({openId:userInfo.openid,name:"2323"})
   ctx.body = Utils.formatSuccess({ key: userInfo.key });
 });
 

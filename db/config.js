@@ -8,7 +8,7 @@ const config = {
     PORT: "3306", //端口
     HOST: "femans.com", //服务ip地址
   },
-  appId: "wxaa7d0b0e7adca612",
-  secret: "7ca6afc9edaf922b10cdf5007a051cc3",
+  appId: "wxf07478d878a186e2",
+  secret: "3cafd782558a1439b5b2f2799dd04374",
 };
 module.exports = config;

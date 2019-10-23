@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-koa": "^2.9.7",
     "async-busboy": "^0.7.0",
     "fs": "0.0.1-security",
+    "graphql": "^14.5.8",
     "is": "^3.3.0",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
@@ -22,8 +24,14 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-views": "^5.2.1",
+    "lodash": "^4.17.15",
     "mysql": "^2.16.0",
     "nodemon": "^1.8.1",
     "path": "^0.12.7"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "trailingComma": "es5"
   }
 }

@@ -35,17 +35,13 @@ function localFilter(ctx) {
   if (allowpage.indexOf(url) == -1) {
     const key = ctx.header.key;
     const session_key = ctx.session.session_key;
+    console.log(`session_key => ${session_key}`);
     if (!key || !session_key || session_key !== key) {
       ctx.redirect('/login');
     }
     console.log('login status validate success');
   }
 }
-//session拦截
-app.use(async (ctx, next) => {
-  localFilter(ctx);
-  await next();
-});
 
 // error handler
 onerror(app);
@@ -67,9 +63,14 @@ app.on('error', (err, ctx) => {
 });
 app.use(session(CONFIG, app));
 
+//session拦截
+app.use(async (ctx, next) => {
+  localFilter(ctx);
+  await next();
+});
 app.listen(3003);
-// router(app);
-graphql.applyMiddleware({ app });
+router(app);
+// graphql.applyMiddleware({ app });
 // http://localhost:8000/graphql
 
-app.listen(8000);
+// app.listen(8000);

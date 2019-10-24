@@ -1,21 +1,21 @@
-const router = require('koa-router')();
 const Utils = require('../utils/index');
+const Router = require('koa-router');
 
 const userDTO = require('../controller/user');
 
+const router = new Router({
+  prefix: '/koa-api/user',
+});
 //小程序前端——登陆获取用户信息
 router.post('/login', async (ctx, next) => {
-  // const userInfo = await Utils.getUserInfo(ctx.request.body.code);
+  const code = ctx.request.body.code;
+  const token = await Utils.getUserInfo(code);
   // session key， openid
-  ctx.session.session_key = 'userInfo.key';
-  // ctx.session.openid = userInfo.openid;
-  // userDTO.insertUser({openId:userInfo.openid,name:"2323"})
-  ctx.body = 'Utils.formatSuccess({ key: userInfo.key })';
-  next();
+  ctx.body = Utils.formatSuccess({ token });
 });
 
 //查询用户
-router.post('/koa-api/user/list', async (ctx, next) => {
+router.post('/list', async (ctx, next) => {
   let params = ctx.request.body;
   let oCount = await userDTO.findUserCount(params);
   await userDTO.findUser(params).then(async res => {
@@ -32,7 +32,7 @@ router.post('/koa-api/user/list', async (ctx, next) => {
   });
 });
 //修改用户数据
-router.post('/koa-api/user/update', async (ctx, next) => {
+router.post('/update', async (ctx, next) => {
   let params = ctx.request.body || {};
   await userDTO.modifyUserName(params).then(res => {
     let { insertId: id } = res;
@@ -40,7 +40,7 @@ router.post('/koa-api/user/update', async (ctx, next) => {
   });
 });
 //插入用户
-router.post('/koa-api/user/add', async (ctx, next) => {
+router.post('/add', async (ctx, next) => {
   let { user_name } = ctx.request.body || {};
   let oUser = await userDTO.findUserByName(user_name);
   if (oUser.length == 0) {
@@ -51,7 +51,7 @@ router.post('/koa-api/user/add', async (ctx, next) => {
   }
 });
 //删除用户
-router.post('/koa-api/user/delete', async (ctx, next) => {
+router.post('/delete', async (ctx, next) => {
   let params = ctx.request.body || {};
   await userDTO.deleteUserById(params).then(res => {
     let { insertId: id } = res;

@@ -1,4 +1,4 @@
-const { query } = require("../db");
+const { query } = require('../db');
 let findUser = function(params) {
   let { name, pageSize, page } = params;
   let offset = (page - 1) * pageSize;
@@ -23,25 +23,31 @@ let findUserCount = function(params) {
   return query(sql, value);
 };
 let findUserByName = function(user_name) {
-  let sql = "SELECT * FROM user  WHERE user_name = ?";
+  let sql = 'SELECT * FROM user  WHERE user_name = ?';
   let value = [user_name];
+  return query(sql, value);
+};
+let findUserByOpenId = function(openId) {
+  let sql = 'SELECT * FROM user  WHERE open_id = ?';
+  let value = [openId];
   return query(sql, value);
 };
 let insertUser = function(params) {
   let { openId, name } = params;
-  let sql = "INSERT INTO user (open_id,name) VALUES (?,?)";
-  let value = [openId, name];
+  console.log(openId);
+  let sql = 'INSERT INTO user (open_id,name,create_time) VALUES (?,?,?)';
+  let value = [openId, name, new Date()];
   return query(sql, value);
 };
 let deleteUserById = function(params) {
   let { id } = params;
-  let sql = "DELETE FROM user WHERE id = ?";
+  let sql = 'DELETE FROM user WHERE id = ?';
   let value = [id];
   return query(sql, value);
 };
 let modifyUserName = function(params) {
   let { id, user_name, user_email } = params;
-  let sql = "UPDATE user SET user_name = ?,user_email=? WHERE id=?",
+  let sql = 'UPDATE user SET user_name = ?,user_email=? WHERE id=?',
     value = [user_name, user_email, id];
   return query(sql, value);
 };
@@ -52,21 +58,23 @@ let findUserImgCount = function(user_id) {
 };
 let uploadUserImg = function(params) {
   let { user_id, file_name, file_path } = params;
-  let sql = "INSERT INTO upload (user_id,file_name,file_path) VALUES (?,?,?)";
+  let sql = 'INSERT INTO upload (user_id,file_name,file_path) VALUES (?,?,?)';
   let value = [user_id, file_name, file_path];
   return query(sql, value);
 };
 let updateUserImg = function(params) {
   let { user_id, file_name, file_path } = params;
-  let sql = "UPDATE upload SET file_name=?,file_path=? WHERE user_id=?";
+  let sql = 'UPDATE upload SET file_name=?,file_path=? WHERE user_id=?';
   let value = [file_name, file_path, user_id];
   return query(sql, value);
 };
+
 module.exports = {
   findUser,
   findUserByName,
   modifyUserName,
   insertUser,
+  findUserByOpenId,
   deleteUserById,
   findUserCount,
   findUserImgCount,

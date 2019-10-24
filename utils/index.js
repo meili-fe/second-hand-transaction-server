@@ -1,8 +1,11 @@
-const IS = require("is");
-const crypto = require("crypto");
-const WXBizDataCrypt = require("./WXBizDataCrypt");
-const config = require("../db/config");
-const request = require("request");
+const IS = require('is');
+const crypto = require('crypto');
+const WXBizDataCrypt = require('./WXBizDataCrypt');
+const config = require('../db/config');
+const request = require('request');
+const userDTO = require('../controller/user');
+
+const SECRET = 'mlxysecret';
 let util = {
   //formatData 必须为 {key,type}的格式,可以不传type
   formatData(params, valids) {
@@ -16,20 +19,20 @@ let util = {
         res = false;
         break;
       }
-      let value = params[key] || "";
-      if (type === "not_empty") {
+      let value = params[key] || '';
+      if (type === 'not_empty') {
         if (IS.empty(value)) {
           res = false;
           break;
         }
-      } else if (type === "number") {
+      } else if (type === 'number') {
         value = Number(value);
         if (!IS.number(value) || IS.nan(value)) {
           res = false;
           break;
         }
-      } else if (type === "reg") {
-        let reg = e["reg"];
+      } else if (type === 'reg') {
+        let reg = e['reg'];
         if (!reg || !reg.test(value)) {
           res = false;
           break;
@@ -48,10 +51,7 @@ let util = {
       let data = {};
       filterArr.forEach(e => {
         let val = params[e];
-        if (
-          (!IS.undefined(val) && !IS.null(val) && !IS.empty(val)) ||
-          IS.array.empty(val)
-        ) {
+        if ((!IS.undefined(val) && !IS.null(val) && !IS.empty(val)) || IS.array.empty(val)) {
           data[e] = val;
         }
       });
@@ -70,7 +70,7 @@ let util = {
     };
   },
   // 成功信息包装
-  formatSuccess(data = {}, msg = "操作成功") {
+  formatSuccess(data = {}, msg = '操作成功') {
     return {
       code: 0,
       msg,
@@ -81,7 +81,7 @@ let util = {
   queryData(params, queryArr) {
     //仅适用于列
     let data = {};
-    if (this.type(params) == "object" && this.type(queryArr) == "array") {
+    if (this.type(params) == 'object' && this.type(queryArr) == 'array') {
       queryArr.forEach(e => {
         let val = params[e];
         if (!!val || val == 0) {
@@ -93,9 +93,9 @@ let util = {
   },
   createTryptoSha(data) {
     return crypto
-      .createHash("sha1")
-      .update(data, "utf8")
-      .digest("hex");
+      .createHash('sha1')
+      .update(data, 'utf8')
+      .digest('hex');
   },
   cryptoData(sessionKey, data, iv) {
     return new Promise((resolve, reject) => {
@@ -105,28 +105,59 @@ let util = {
     });
   },
   getUserInfo(code) {
-    let USERINFO = [];
     return new Promise((resolve, reject) => {
       let options = {
-        url: "https://api.weixin.qq.com/sns/jscode2session",
+        url: 'https://api.weixin.qq.com/sns/jscode2session',
         qs: {
           appid: config.appId,
           secret: config.secret,
           js_code: code,
-          grant_type: "authorization_code",
+          grant_type: 'authorization_code',
         },
       };
-      request(options, (err, response, body) => {
+      request(options, async (err, response, body) => {
         if (err) reject(err);
         body = JSON.parse(body);
-        let skey = this.createTryptoSha(body.session_key);
+        let skey = body.session_key;
         let data = {
           key: skey,
-          openid: body.openid,
+          openId: body.openid,
         };
-        resolve(data);
+        // 判断用户是否存在，不存在则查询用户信息 并 落库
+        const user = await userDTO.findUserByOpenId(data.openId);
+        if (!user || user.length <= 0) {
+          const param = { openId: body.openid, name: '' };
+          await userDTO.insertUser(param).then(res => {
+            const { insertId } = res;
+            data.userId = insertId;
+          });
+        } else {
+          data.userId = user[0].id;
+        }
+        const userInfo = this.encrypt(JSON.stringify(data));
+        const expireTime = new Date().getTime() + 1 * 60 * 60 * 1000;
+        const result = {
+          userInfo,
+          expireTime,
+        };
+        resolve(result);
       });
     });
   },
+  //加密
+  encrypt(str) {
+    const cipher = crypto.createCipher('aes192', SECRET);
+    var crypted = cipher.update(str, 'utf8', 'hex');
+    crypted += cipher.final('hex');
+    return crypted;
+  },
+  //解密
+  decrypt(str) {
+    const decipher = crypto.createDecipher('aes192', SECRET);
+    var decrypted = decipher.update(str, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  },
 };
+
 module.exports = util;

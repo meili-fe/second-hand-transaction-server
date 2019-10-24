@@ -33,9 +33,28 @@ let findProduct = function(params) {
   //   let value = ["%" + title + "%", cate_id];
   return query(sql, value);
 };
+// 查询当前用户发布产品
+let findProductByUser = function(params) {
+  let { userId, status } = params;
+  let sql = `SELECT 
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,
+    c.name category_name,
+    GROUP_CONCAT( p_img.img_url ) AS img_list     
+    FROM product p
+    LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
+    LEFT JOIN category c ON p.cate_id = c.id WHERE owner_id = ?
+    `;
+
+  if (status) {
+    sql += `AND  status =  ? `;
+  }
+  sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  let value = [userId, status];
+  return query(sql, value);
+};
 // 查询产品分类
 let findAllType = function() {
-  let sql = `SELECT name FROM category `;
+  let sql = `SELECT id,name,desc FROM category `;
   return query(sql);
 };
 
@@ -51,12 +70,30 @@ let findProductCount = function(params) {
 };
 // 添加商品
 let insertProduct = function(params) {
-  let { cate_id, title, location, price, description, contact } = params;
+  let {
+    cate_id,
+    title,
+    location,
+    price,
+    description,
+    contact,
+    userId,
+  } = params;
   let sql =
-    "INSERT INTO product (cate_id,title,location,price,description,contact,status) VALUES (?,?,?,?,?,?,?)";
-  let value = [cate_id, title, location, price, description, contact, 0];
+    "INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status) VALUES (?,?,?,?,?,?,?,?)";
+  let value = [
+    cate_id,
+    userId,
+    title,
+    location,
+    price,
+    description,
+    contact,
+    0,
+  ];
   return query(sql, value);
 };
+
 // 添加图片
 let insertProductImg = function(params) {
   let { pro_id, img_url } = params;
@@ -107,6 +144,7 @@ module.exports = {
   findProduct,
   findAllType,
   findProductCount,
+  findProductByUser,
   insertProduct,
   updateProduct,
   updateProductSataus,

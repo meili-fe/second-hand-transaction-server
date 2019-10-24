@@ -1,24 +1,24 @@
-const session = require('koa-session');
-const Koa = require('koa');
+const session = require("koa-session");
+const Koa = require("koa");
 const app = new Koa();
-const json = require('koa-json');
-const onerror = require('koa-onerror');
-const bodyParser = require('koa-bodyparser');
-const error = require('koa-json-error');
-const parameter = require('koa-parameter');
-const utils = require('./utils');
-const logger = require('koa-logger');
-const koaStatic = require('koa-static');
-const cors = require('koa-cors');
+const json = require("koa-json");
+const onerror = require("koa-onerror");
+const bodyParser = require("koa-bodyparser");
+const error = require("koa-json-error");
+const parameter = require("koa-parameter");
+const utils = require("./utils");
+const logger = require("koa-logger");
+const koaStatic = require("koa-static");
+const cors = require("koa-cors");
 
-const router = require('./routes');
-const graphql = require('./graphql');
+const router = require("./routes");
+const graphql = require("./graphql");
 
 //  引入koa-session
 
-app.keys = ['mlxianyu'];
+app.keys = ["mlxianyu"];
 const CONFIG = {
-  key: 'mlxy:session', //cookie key
+  key: "mlxy:session", //cookie key
   maxAge: 3600 * 1000, // cookie的过期时间 maxAge in ms (default is 1 days)
   overwrite: true, //是否可以overwrite    (默认default true)
   httpOnly: true, //cookie是否只有服务器端可以访问 httpOnly or not (default true)
@@ -28,7 +28,7 @@ const CONFIG = {
 };
 
 //定义允许直接访问的url
-const allowpage = ['/login'];
+const allowpage = ["/login"];
 //前置拦截
 function localFilter(ctx) {
   let url = ctx.originalUrl;
@@ -37,9 +37,9 @@ function localFilter(ctx) {
     const session_key = ctx.session.session_key;
     console.log(`session_key => ${session_key}`);
     if (!key || !session_key || session_key !== key) {
-      ctx.redirect('/login');
+      ctx.redirect("/login");
     }
-    console.log('login status validate success');
+    console.log("login status validate success");
   }
 }
 
@@ -47,7 +47,7 @@ function localFilter(ctx) {
 onerror(app);
 
 // 跨域
-// app.use(cors());
+app.use(cors());
 
 //  请求传参
 app.use(bodyParser());
@@ -55,19 +55,23 @@ app.use(json());
 app.use(logger());
 app.use(error(utils.formatError));
 app.use(parameter(app));
-app.use(koaStatic(__dirname));
+app.use(
+  koaStatic(__dirname + "/views", {
+    extensions: ["html"],
+  }),
+);
 
 // error-handling
-app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx);
+app.on("error", (err, ctx) => {
+  console.error("server error", err, ctx);
 });
-app.use(session(CONFIG, app));
+// app.use(session(CONFIG, app));
 
-//session拦截
-app.use(async (ctx, next) => {
-  localFilter(ctx);
-  await next();
-});
+// //session拦截
+// app.use(async (ctx, next) => {
+//   localFilter(ctx);
+//   await next();
+// });
 app.listen(3003);
 router(app);
 // graphql.applyMiddleware({ app });

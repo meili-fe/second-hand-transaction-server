@@ -23,6 +23,13 @@ router.post("/list", async (ctx, next) => {
   });
 });
 
+//查询分类列表
+router.post("/allType", async (ctx, next) => {
+  await productDTO.findAllType().then(async res => {
+    ctx.body = Utils.formatSuccess(res);
+  });
+});
+
 //添加商品
 router.post("/add", async (ctx, next) => {
   let { img_url } = ctx.request.body;
@@ -38,15 +45,23 @@ router.post("/add", async (ctx, next) => {
     });
     ctx.body = Utils.formatSuccess("图片添加成功");
   });
-
-  //   ctx.body = Utils.formatSuccess(insertId);
 });
 
 //修改商品信息
 router.post("/update", async (ctx, next) => {
   let params = ctx.request.body || {};
-  await productDTO.updateProduct(params).then(res => {
-    ctx.body = Utils.formatSuccess();
+  let { img_url, id } = ctx.request.body;
+
+  await productDTO.updateProduct(params).then(async res => {
+    let aImg = img_url.split(",");
+    aImg.forEach(item => {
+      let params = {
+        pro_id: id,
+        img_url: item,
+      };
+      productDTO.insertProductImg(params);
+    });
+    ctx.body = Utils.formatSuccess(params, "图片添加成功");
   });
 });
 
@@ -61,6 +76,12 @@ router.post("/updateStatus", async (ctx, next) => {
 //删除商品信息
 router.post("/del", async (ctx, next) => {
   await productDTO.deleteProductById(ctx.request.body).then(res => {
+    ctx.body = Utils.formatSuccess();
+  });
+});
+//删除图片信息
+router.post("/delImgByUrl", async (ctx, next) => {
+  await productDTO.deleteProductImg(ctx.request.body).then(res => {
     ctx.body = Utils.formatSuccess();
   });
 });

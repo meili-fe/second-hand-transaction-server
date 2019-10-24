@@ -2,8 +2,9 @@ const { query } = require("../db");
 
 // 查询所有产品
 let findProduct = function(params) {
-  let { title, pageSize, page } = params;
+  let { title, cate_id, pageSize, page } = params;
   let offset = (page - 1) * pageSize;
+  let value = [];
   let sql = `SELECT 
     p.id,p.title,p.location,p.price,p.contact,p.description,p.status,
     c.name category_name,
@@ -13,13 +14,23 @@ let findProduct = function(params) {
     LEFT JOIN category c ON p.cate_id = c.id 
     `;
 
-  if (title) {
+  if (title && !cate_id) {
     offset = 0;
-    sql += ` WHERE p.title like ? `;
+    sql += `WHERE  p.title like ? `;
+    value.push("%" + title + "%");
+  }
+  if (cate_id && !title) {
+    sql += ` WHERE  p.cate_id = ? `;
+    value.push(cate_id);
+  }
+  if (cate_id && title) {
+    sql += ` WHERE p.title like ? AND p.cate_id = ? `;
+    value = ["%" + title + "%", cate_id];
   }
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC  limit ${offset},${pageSize}  `;
 
-  let value = ["%" + title + "%"];
+  //   console.log(sql);
+  //   let value = ["%" + title + "%", cate_id];
   return query(sql, value);
 };
 // 查询产品分类

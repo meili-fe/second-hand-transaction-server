@@ -49,12 +49,13 @@ let findProductByUser = function(params) {
     sql += `AND  status =  ? `;
   }
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  console.log(sql);
   let value = [userId, status];
   return query(sql, value);
 };
 // 查询产品分类
 let findAllType = function() {
-  let sql = `SELECT id,name,desc FROM category `;
+  let sql = `SELECT id,name,description FROM category`;
   return query(sql);
 };
 

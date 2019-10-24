@@ -1,20 +1,20 @@
-const Koa = require('koa');
+const Koa = require("koa");
 const app = new Koa();
-const json = require('koa-json');
-const onerror = require('koa-onerror');
-const bodyParser = require('koa-bodyparser');
-const error = require('koa-json-error');
-const parameter = require('koa-parameter');
-const utils = require('./utils');
-const logger = require('koa-logger');
-const koaStatic = require('koa-static');
-const cors = require('koa-cors');
+const json = require("koa-json");
+const onerror = require("koa-onerror");
+const bodyParser = require("koa-bodyparser");
+const error = require("koa-json-error");
+const parameter = require("koa-parameter");
+const utils = require("./utils");
+const logger = require("koa-logger");
+const koaStatic = require("koa-static");
+const cors = require("koa-cors");
 
-const router = require('./routes');
-const graphql = require('./graphql');
+const router = require("./routes");
+const graphql = require("./graphql");
 
 //定义允许直接访问的url
-const allowpage = ['/koa-api/user/login'];
+const allowpage = ["/koa-api/user/login", "/koa-api/product/allType"];
 const COMMON_STATUS = {
   NEED_LOGIN: 600,
 };
@@ -26,7 +26,7 @@ function localFilter(ctx, next) {
     if (!token) {
       ctx.body = utils.formatError({
         status: COMMON_STATUS.NEED_LOGIN,
-        message: '请重新登陆',
+        message: "请重新登陆",
       });
       return;
     }
@@ -39,7 +39,7 @@ function localFilter(ctx, next) {
       // 过期
       ctx.body = utils.formatError({
         status: COMMON_STATUS.NEED_LOGIN,
-        message: '请重新登陆',
+        message: "请重新登陆",
       });
     } else {
       const decodeUserinfo = utils.decrypt(userInfo);
@@ -64,14 +64,14 @@ app.use(logger());
 app.use(error(utils.formatError));
 app.use(parameter(app));
 app.use(
-  koaStatic(__dirname + '/views', {
-    extensions: ['html'],
-  })
+  koaStatic(__dirname + "/views", {
+    extensions: ["html"],
+  }),
 );
 
 // error-handling
-app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx);
+app.on("error", (err, ctx) => {
+  console.error("server error", err, ctx);
 });
 
 //前置拦截

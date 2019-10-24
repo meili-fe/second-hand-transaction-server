@@ -1,17 +1,17 @@
 const Koa = require('koa');
 const app = new Koa();
-const json = require('koa-json');
-const onerror = require('koa-onerror');
-const bodyParser = require('koa-bodyparser');
-const error = require('koa-json-error');
-const parameter = require('koa-parameter');
-const utils = require('./utils');
-const logger = require('koa-logger');
-const koaStatic = require('koa-static');
-const cors = require('koa-cors');
+const json = require("koa-json");
+const onerror = require("koa-onerror");
+const bodyParser = require("koa-bodyparser");
+const error = require("koa-json-error");
+const parameter = require("koa-parameter");
+const utils = require("./utils");
+const logger = require("koa-logger");
+const koaStatic = require("koa-static");
+const cors = require("koa-cors");
 
-const router = require('./routes');
-const graphql = require('./graphql');
+const router = require("./routes");
+const graphql = require("./graphql");
 
 //定义允许直接访问的url
 const allowpage = ['/koa-api/user/login'];
@@ -54,7 +54,7 @@ function localFilter(ctx, next) {
 onerror(app);
 
 // 跨域
-// app.use(cors());
+app.use(cors());
 
 //  请求传参
 app.use(bodyParser());
@@ -62,11 +62,15 @@ app.use(json());
 app.use(logger());
 app.use(error(utils.formatError));
 app.use(parameter(app));
-app.use(koaStatic(__dirname));
+app.use(
+  koaStatic(__dirname + "/views", {
+    extensions: ["html"],
+  }),
+);
 
 // error-handling
-app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx);
+app.on("error", (err, ctx) => {
+  console.error("server error", err, ctx);
 });
 
 //前置拦截

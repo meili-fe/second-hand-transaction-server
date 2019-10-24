@@ -40,6 +40,13 @@ let insertProduct = function(params) {
   let value = [cate_id, title, location, price, description, contact, 0];
   return query(sql, value);
 };
+// 添加图片
+let insertProductImg = function(params) {
+  let { pro_id, img_url } = params;
+  let sql = "INSERT INTO product_img (pro_id,img_url) VALUES (?,?)";
+  let value = [pro_id, img_url];
+  return query(sql, value);
+};
 // 修改商品信息
 let updateProduct = function(params) {
   let { title, location, price, description, contact } = params;
@@ -70,5 +77,6 @@ module.exports = {
   insertProduct,
   updateProduct,
   updateProductSataus,
+  insertProductImg,
   deleteProductById,
 };

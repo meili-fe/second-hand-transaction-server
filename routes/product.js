@@ -25,9 +25,21 @@ router.post("/list", async (ctx, next) => {
 
 //添加商品
 router.post("/add", async (ctx, next) => {
-  await productDTO.insertProduct(ctx.request.body).then(res => {
-    ctx.body = Utils.formatSuccess();
+  let { img_url } = ctx.request.body;
+  await productDTO.insertProduct(ctx.request.body).then(async res => {
+    let { insertId } = res;
+    let aImg = img_url.split(",");
+    aImg.forEach(item => {
+      let params = {
+        pro_id: insertId,
+        img_url: item,
+      };
+      productDTO.insertProductImg(params);
+    });
+    ctx.body = Utils.formatSuccess("图片添加成功");
   });
+
+  //   ctx.body = Utils.formatSuccess(insertId);
 });
 
 //修改商品信息

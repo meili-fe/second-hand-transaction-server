@@ -45,11 +45,7 @@ function localFilter(ctx, next) {
       // 过期
       ctx.body = utils.formatError({
         status: COMMON_STATUS.NEED_LOGIN,
-<<<<<<< HEAD
-        message: "请重新登陆",
-=======
-        message: '登录超时请重新登录',
->>>>>>> 2078639041ed6ea1873f71cc6c1ac2cd9d789a0f
+        message: "登录超时请重新登录",
       });
     } else {
       const decodeUserinfo = utils.decrypt(userInfo);

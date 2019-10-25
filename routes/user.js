@@ -9,7 +9,12 @@ const router = new Router({
 //小程序前端——登陆获取用户信息
 router.post('/login', async (ctx, next) => {
   const code = ctx.request.body.code;
-  const token = await Utils.getUserInfo(code);
+  const nickName = ctx.request.body.name;
+  if (!code) {
+    ctx.body = Utils.formatParamError('code为空');
+    return;
+  }
+  const token = await Utils.getUserInfo(code, nickName);
   // session key， openid
   ctx.body = Utils.formatSuccess({ token });
 });

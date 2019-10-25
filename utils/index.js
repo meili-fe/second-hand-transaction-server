@@ -4,6 +4,7 @@ const WXBizDataCrypt = require('./WXBizDataCrypt');
 const config = require('../db/config');
 const request = require('request');
 const userDTO = require('../controller/user');
+const COMMON_STATUS = require('./common');
 
 const SECRET = 'mlxysecret';
 let util = {
@@ -69,10 +70,18 @@ let util = {
       data: null,
     };
   },
+  formatParamError(msg) {
+    return {
+      code: COMMON_STATUS.PARAM_ERRO,
+      msg,
+      success: false,
+      data: null,
+    };
+  },
   // 成功信息包装
   formatSuccess(data = {}, msg = '操作成功') {
     return {
-      code: 0,
+      code: COMMON_STATUS.SUCCESS,
       msg,
       success: true,
       data,
@@ -104,7 +113,7 @@ let util = {
       resolve(a);
     });
   },
-  getUserInfo(code) {
+  getUserInfo(code, nickName) {
     return new Promise((resolve, reject) => {
       let options = {
         url: 'https://api.weixin.qq.com/sns/jscode2session',
@@ -126,7 +135,7 @@ let util = {
         // 判断用户是否存在，不存在则查询用户信息 并 落库
         const user = await userDTO.findUserByOpenId(data.openId);
         if (!user || user.length <= 0) {
-          const param = { openId: body.openid, name: '' };
+          const param = { openId: body.openid, name: nickName };
           await userDTO.insertUser(param).then(res => {
             const { insertId } = res;
             data.userId = insertId;
@@ -135,6 +144,7 @@ let util = {
           data.userId = user[0].id;
         }
         const userInfo = this.encrypt(JSON.stringify(data));
+        // 过期时间校验 1 小时
         const expireTime = new Date().getTime() + 1 * 60 * 60 * 1000;
         const result = {
           userInfo,

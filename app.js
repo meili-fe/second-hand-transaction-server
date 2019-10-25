@@ -13,11 +13,11 @@ const cors = require('koa-cors');
 const router = require('./routes');
 const graphql = require('./graphql');
 
+const COMMON_STATUS = require('./utils/common');
+
 //定义允许直接访问的url
 const allowpage = ['/koa-api/user/login'];
-const COMMON_STATUS = {
-  NEED_LOGIN: 600,
-};
+
 //前置拦截
 function localFilter(ctx, next) {
   let url = ctx.originalUrl;
@@ -82,7 +82,6 @@ app.use(async (ctx, next) => {
     await next();
   }
 });
-
 router(app);
 // graphql.applyMiddleware({ app });
 // http://localhost:8000/graphql

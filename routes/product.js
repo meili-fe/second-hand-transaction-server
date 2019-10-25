@@ -36,6 +36,13 @@ router.post("/productByUser", async (ctx, next) => {
     ctx.body = Utils.formatSuccess(res);
   });
 });
+//查询商品详情
+router.post("/productById", async (ctx, next) => {
+  let params = ctx.request.body;
+  await productDTO.findProductById(params).then(async res => {
+    ctx.body = Utils.formatSuccess(res[0]);
+  });
+});
 
 //添加商品
 router.post("/add", async (ctx, next) => {

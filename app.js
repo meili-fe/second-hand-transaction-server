@@ -16,7 +16,7 @@ const graphql = require('./graphql');
 const COMMON_STATUS = require('./utils/common');
 
 //定义允许直接访问的url
-const allowpage = ['/koa-api/user/login'];
+const allowpage = ['/koa-api/user/login', '/koa-api/product/allType'];
 
 //前置拦截
 function localFilter(ctx, next) {

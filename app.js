@@ -39,7 +39,7 @@ function localFilter(ctx, next) {
       // 过期
       ctx.body = utils.formatError({
         status: COMMON_STATUS.NEED_LOGIN,
-        message: '请重新登陆',
+        message: '登录超时请重新登录',
       });
     } else {
       const decodeUserinfo = utils.decrypt(userInfo);

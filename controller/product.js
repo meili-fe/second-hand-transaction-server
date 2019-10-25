@@ -46,9 +46,10 @@ let findProductByUser = function(params) {
     `;
 
   if (status) {
-    sql += `AND  status =  ? `;
+    sql += `AND  p.status =  ? `;
   }
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  console.log(sql);
   let value = [userId, status];
   return query(sql, value);
 };

@@ -19,6 +19,7 @@ const COMMON_STATUS = require("./utils/common");
 const allowpage = [
   "/koa-api/user/login",
   "/koa-api/product/allType",
+  // "/koa-api/product/productByUser",
   // "/koa-api/product/productById",
   // "/koa-api/product/list",
   // "/koa-api/product/add",

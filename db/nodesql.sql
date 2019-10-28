@@ -3,7 +3,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `open_id` varchar(20) DEFAULT NULL COMMENT '微信openid',
   `name` varchar(200) DEFAULT NULL COMMENT '姓名',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `open_id` (`open_id`)
@@ -13,6 +13,7 @@ CREATE TABLE `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(40) DEFAULT '' COMMENT '类别名称',
   `status` TINYINT(5) DEFAULT 0 COMMENT '状态(0 正常 1 删除)',
+  `description` varchar(500) DEFAULT NULL COMMENT '描述',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
@@ -29,7 +30,7 @@ CREATE TABLE `product` (
   `contact` varchar(40) DEFAULT NULL COMMENT '联系方式',
   `status` tinyint(5) DEFAULT '0' COMMENT '状态(0 发布 1 已卖出 2 关闭)',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='商品表';
 

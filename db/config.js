@@ -8,7 +8,8 @@ const config = {
     PORT: '3306', //端口
     HOST: 'femans.com', //服务ip地址
   },
-  appURL: 'second-hand.femans.com', //项目根域名
+  // appURL: 'second-hand.femans.com', //项目根域名
+  appURL: 'localhost:3003',
   appId: 'wxf07478d878a186e2',
   secret: '3cafd782558a1439b5b2f2799dd04374',
 };

@@ -3,7 +3,6 @@ const app = new Koa();
 const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyParser = require('koa-bodyparser');
-const koaBody = require('koa-body');
 const error = require('koa-json-error');
 const parameter = require('koa-parameter');
 const utils = require('./utils');
@@ -68,14 +67,6 @@ app.use(cors());
 
 //  请求传参
 app.use(bodyParser());
-app.use(
-  koaBody({
-    multipart: true,
-    formidable: {
-      maxFileSize: 200 * 1024 * 1024, // 设置上传文件大小最大限制，默认2M
-    },
-  })
-);
 app.use(json());
 app.use(logger());
 app.use(error(utils.formatError));

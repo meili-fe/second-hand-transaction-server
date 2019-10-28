@@ -104,6 +104,8 @@ router.post('/delImgByUrl', async (ctx, next) => {
 //上传产品图片
 router.post('/upload', async (ctx, next) => {
   const { files, fields } = await asyncBusboy(ctx.req);
+  console.log('---------------');
+  console.log(files[0]);
   // 判断文件数量
   if (files.length === 0) {
     ctx.throw(500, '图片不存在');
@@ -129,7 +131,7 @@ router.post('/upload', async (ctx, next) => {
       fs.unlinkSync(file.path); //清除缓存文件
       ctx.body = Utils.formatSuccess(params);
     };
-    saveImg();
+    await saveImg();
   }
 });
 

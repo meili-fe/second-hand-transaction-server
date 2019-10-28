@@ -9,10 +9,7 @@
   <body>
     <script src="http://unpkg.com/vue/dist/vue.js"></script>
     <script src="http://unpkg.com/element-ui@2.12.0/lib/index.js"></script>
-    <link
-      rel="stylesheet"
-      href="http://unpkg.com/element-ui@2.12.0/lib/theme-chalk/index.css"
-    />
+    <link rel="stylesheet" href="http://unpkg.com/element-ui@2.12.0/lib/theme-chalk/index.css" />
     <div id="app">
       <el-upload
         class="upload-demo"
@@ -21,7 +18,7 @@
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
         multiple
-        :limit="3"
+        :limit="5"
         :on-exceed="handleExceed"
         :file-list="fileList"
       >
@@ -47,9 +44,8 @@
           },
           handleExceed(files, fileList) {
             this.$message.warning(
-              `当前限制选择 3 个文件，本次选择了 ${
-                files.length
-              } 个文件，共选择了 ${files.length + fileList.length} 个文件`,
+              `当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length +
+                fileList.length} 个文件`
             );
           },
           beforeRemove(file, fileList) {
@@ -58,7 +54,7 @@
         },
       };
       var Ctor = Vue.extend(Main);
-      new Ctor().$mount("#app");
+      new Ctor().$mount('#app');
     </script>
   </body>
 </html>

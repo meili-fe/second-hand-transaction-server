@@ -47,10 +47,10 @@ router.post('/productById', async (ctx, next) => {
 
 //添加商品
 router.post('/add', async (ctx, next) => {
-  let { img_url } = ctx.request.body;
+  let { img_list } = ctx.request.body;
   await productDTO.insertProduct(ctx.request.body).then(async res => {
     let { insertId } = res;
-    let aImg = img_url.split(',');
+    let aImg = img_list.split(',');
     aImg.forEach(item => {
       let params = {
         pro_id: insertId,
@@ -65,10 +65,10 @@ router.post('/add', async (ctx, next) => {
 //修改商品信息
 router.post('/update', async (ctx, next) => {
   let params = ctx.request.body || {};
-  let { img_url, id } = ctx.request.body;
+  let { img_list, id } = ctx.request.body;
 
   await productDTO.updateProduct(params).then(async res => {
-    let aImg = img_url.split(',');
+    let aImg = img_list.split(',');
     aImg.forEach(item => {
       let params = {
         pro_id: id,

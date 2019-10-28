@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const Utils = require('../utils/index');
-const config = require('./config');
+const config = require('../db/config');
 const fs = require('fs');
 const path = require('path');
 const asyncBusboy = require('async-busboy');

@@ -144,8 +144,8 @@ let util = {
           data.userId = user[0].id;
         }
         const userInfo = this.encrypt(JSON.stringify(data));
-        // 过期时间校验 1 小时
-        const expireTime = new Date().getTime() + 1 * 60 * 60 * 1000;
+        // 过期时间校验 5 小时
+        const expireTime = new Date().getTime() + 5 * 60 * 60 * 1000;
         const result = {
           userInfo,
           expireTime,

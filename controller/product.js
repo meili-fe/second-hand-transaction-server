@@ -6,7 +6,7 @@ let findProduct = function(params) {
   let offset = (page - 1) * pageSize;
   let value = [];
   let sql = `SELECT 
-    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
     c.name category_name,
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p
@@ -37,7 +37,7 @@ let findProduct = function(params) {
 let findProductByUser = function(params) {
   let { userId, status } = params;
   let sql = `SELECT 
-    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
     c.name category_name,
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p
@@ -46,9 +46,10 @@ let findProductByUser = function(params) {
     `;
 
   if (status) {
-    sql += `AND  status =  ? `;
+    sql += `AND  p.status =  ? `;
   }
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  console.log(sql);
   let value = [userId, status];
   return query(sql, value);
 };
@@ -56,6 +57,21 @@ let findProductByUser = function(params) {
 let findAllType = function() {
   let sql = `SELECT id,name,description FROM category `;
   return query(sql);
+};
+// 查询商品详情
+let findProductById = function(params) {
+  let { id } = params;
+  let sql = `SELECT 
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
+    c.name category_name,
+    GROUP_CONCAT( p_img.img_url ) AS img_list     
+    FROM product p
+    LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
+    LEFT JOIN category c ON p.cate_id = c.id WHERE p.id = ?
+    `;
+  sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  let value = [id];
+  return query(sql, value);
 };
 
 // 查询产品总数
@@ -79,10 +95,10 @@ let insertProduct = function(params) {
     price,
     description,
     contact,
-    userId,
+    userId = 1,
   } = params;
   let sql =
-    "INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status) VALUES (?,?,?,?,?,?,?,?)";
+    "INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status,create_time) VALUES (?,?,?,?,?,?,?,?,?)";
   let value = [
     cate_id,
     userId,
@@ -92,6 +108,7 @@ let insertProduct = function(params) {
     description,
     contact,
     0,
+    new Date(),
   ];
   return query(sql, value);
 };
@@ -147,6 +164,7 @@ module.exports = {
   findAllType,
   findProductCount,
   findProductByUser,
+  findProductById,
   insertProduct,
   updateProduct,
   updateProductSataus,

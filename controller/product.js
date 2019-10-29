@@ -58,7 +58,7 @@ let findAllType = function() {
 let findProductById = function(params) {
   let { id } = params;
   let sql = `SELECT 
-    p.id,p.owner_id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
+    p.id,p.owner_id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,p.cate_id,
     c.name category_name,
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p

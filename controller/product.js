@@ -124,9 +124,9 @@ let updateProductImg = function(params) {
 
 // 修改商品信息状态(0 发布 1 已卖出 2 关闭)
 let updateProductSataus = function(params) {
-  let { status } = params;
+  let { status, id } = params;
   let sql = 'UPDATE product SET status=? WHERE id=?',
-    value = [status];
+    value = [status, id];
   return query(sql, value);
 };
 // 删除商品信息

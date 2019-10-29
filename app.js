@@ -15,18 +15,24 @@ const graphql = require('./graphql');
 
 const COMMON_STATUS = require('./utils/common');
 
+// nunjucks
+const templating = require('./templating'); //将nunjucks绑定给 ctx
+
 //定义允许直接访问的url
 const allowpage = [
   '/koa-api/user/login',
   '/koa-api/product/allType',
   '/koa-api/product/list',
   '/koa-api/product/productById',
-  // '/koa-api/product/productByUser',
+  '/koa-page/checkPro',
+  '/koa-api/product/changeStatus',
 ];
 
 //前置拦截
 function localFilter(ctx, next) {
   let url = ctx.originalUrl;
+  const pos = url.indexOf('?');
+  pos !== -1 ? (url = url.substring(0, pos)) : '';
   let token = ctx.header.token;
   if (allowpage.indexOf(url) == -1) {
     if (!token) {
@@ -65,10 +71,19 @@ app.use(cors());
 
 //  请求传参
 app.use(bodyParser());
+
+app.use(
+  templating('views', {
+    noCache: false,
+    watch: true,
+  })
+);
+
 app.use(json());
 app.use(logger());
 app.use(error(utils.formatError));
 app.use(parameter(app));
+//配置静态文件
 app.use(
   koaStatic(__dirname + '/views', {
     extensions: ['html'],

@@ -82,6 +82,15 @@ router.post('/update', async (ctx, next) => {
   });
 });
 
+//修改商品状态
+router.post('/changeStatus', async (ctx, next) => {
+  let params = ctx.request.body || {};
+
+  await productDTO.updateProductStatus(params).then(async res => {
+    ctx.body = Utils.formatSuccess(null, '修改成功');
+  });
+});
+
 //修改商品所属状态
 router.post('/updateStatus', async (ctx, next) => {
   let params = ctx.request.body || {};

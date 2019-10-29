@@ -114,6 +114,13 @@ let updateProduct = function(params) {
     value = [title, location, price, description, contact, cate_id, id];
   return query(sql, value);
 };
+// 修改商品状态
+let updateProductStatus = function(params) {
+  let { status, id } = params;
+  let sql = 'UPDATE product SET status=? WHERE id=?',
+    value = [status, id];
+  return query(sql, value);
+};
 // 修改图片地址
 let updateProductImg = function(params) {
   let { img_url, pro_id } = params;
@@ -150,4 +157,5 @@ module.exports = {
   deleteProductImg,
   updateProductImg,
   deleteProductById,
+  updateProductStatus,
 };

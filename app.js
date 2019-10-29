@@ -21,6 +21,7 @@ const allowpage = [
   '/koa-api/product/allType',
   '/koa-api/product/list',
   '/koa-api/product/productById',
+  // '/koa-api/product/productByUser',
 ];
 
 //前置拦截

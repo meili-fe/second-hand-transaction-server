@@ -89,6 +89,8 @@ let findProductCount = function(params) {
 // 添加商品
 let insertProduct = function(params) {
   let { cate_id, title, location, price, description, contact, userId } = params;
+  console.log('-----');
+  console.log(params);
   let sql =
     'INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status,create_time) VALUES (?,?,?,?,?,?,?,?,?)';
   let value = [cate_id, userId, title, location, price, description, contact, 0, new Date()];

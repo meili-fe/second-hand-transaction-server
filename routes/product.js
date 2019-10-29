@@ -48,6 +48,8 @@ router.post('/productById', async (ctx, next) => {
 //添加商品
 router.post('/add', async (ctx, next) => {
   let { img_list } = ctx.request.body;
+  console.log('-------');
+  console.log(ctx.state);
   await productDTO.insertProduct(ctx.request.body).then(async res => {
     let { insertId } = res;
     let aImg = img_list.split(',');

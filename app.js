@@ -21,7 +21,7 @@ const allowpage = [
   '/koa-api/product/allType',
   // "/koa-api/product/productByUser",
   // "/koa-api/product/productById",
-  // "/koa-api/product/list",
+  '/koa-api/product/list',
   '/koa-api/product/upload',
   '/koa-api/product/add',
 ];

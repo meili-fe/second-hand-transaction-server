@@ -2,14 +2,14 @@
 const config = {
   port: 3306,
   database: {
-    DATABASE: 'femans_mljr', //数据库
-    USERNAME: 'femans_mljr', //用户
+    DATABASE: 'ganksolo_mljr', //数据库
+    USERNAME: 'ganksolo_mljr', //用户
     PASSWORD: 'password', //密码
     PORT: '3306', //端口
-    HOST: 'femans.com', //服务ip地址
+    HOST: 'ganksolo.com', //服务ip地址
   },
-  // appURL: 'second-hand.femans.com', //项目根域名
-  appURL: 'localhost:3003',
+  appURL: 'second-hand.ganksolo.com', //项目根域名
+  // appURL: 'localhost:3003',
   appId: 'wxf07478d878a186e2',
   secret: '3cafd782558a1439b5b2f2799dd04374',
 };

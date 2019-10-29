@@ -148,6 +148,7 @@ let util = {
         const expireTime = new Date().getTime() + 5 * 60 * 60 * 1000;
         const result = {
           userInfo,
+          userId: data.userId,
           expireTime,
         };
         resolve(result);

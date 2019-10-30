@@ -23,6 +23,7 @@ const allowpage = [
   '/koa-api/user/login',
   '/koa-api/product/allType',
   '/koa-api/product/list',
+  '/koa-api/product/upload',
   '/koa-api/product/productById',
   '/koa-page/checkPro',
   '/koa-api/product/changeStatus',

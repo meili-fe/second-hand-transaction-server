@@ -7,31 +7,59 @@ let findProduct = function(params) {
   let value = [];
   let sql = `SELECT 
     p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
-    c.name category_name,u.name username,u.img_url imgUrl
-    GROUP_CONCAT( p_img.img_url ) AS img_list     
+    c.name category_name,u.name username,u.img_url imgUrl,
+    GROUP_CONCAT( p_img.img_url ) AS img_list  
     FROM product p
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id 
     LEFT JOIN user u ON u.id = p.owner_id
+    WHERE p.status in (1,2)
     `;
 
-  if (title && !cate_id) {
+  if (title) {
     offset = 0;
-    sql += `WHERE  p.title like ? `;
+    sql += `and  p.title like ? `;
     value.push('%' + title + '%');
   }
-  if (cate_id && !title) {
-    sql += ` WHERE  p.cate_id = ? `;
+  if (cate_id) {
+    sql += ` and  p.cate_id = ? `;
     value.push(cate_id);
   }
-  if (cate_id && title) {
-    sql += ` WHERE p.title like ? AND p.cate_id = ? `;
-    value = ['%' + title + '%', cate_id];
-  }
-  sql += ` GROUP BY p.id ORDER BY p.create_time DESC  limit ${offset},${pageSize}  `;
+
+  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,1,2), p.create_time DESC  limit ${offset},${pageSize}  `;
 
   //   console.log(sql);
   //   let value = ["%" + title + "%", cate_id];
+  return query(sql, value);
+};
+// 后台审核查看列表
+let backEndfindProduct = function(params) {
+  let { title, status, pageSize = 10, page = 1 } = params;
+  let offset = (page - 1) * pageSize;
+  let value = [];
+  let sql = `SELECT 
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
+    c.name category_name,u.name username,u.img_url imgUrl,
+    GROUP_CONCAT( p_img.img_url ) AS img_list  
+    FROM product p
+    LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
+    LEFT JOIN category c ON p.cate_id = c.id 
+    LEFT JOIN user u ON u.id = p.owner_id
+    WHERE 1 = 1
+    `;
+
+  if (title) {
+    offset = 0;
+    sql += `and  p.title like ? `;
+    value.push('%' + title + '%');
+  }
+  if (status) {
+    sql += `and  p.status = ? `;
+    value.push(parseInt(status));
+  }
+
+  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,0,1,99,2,3), p.create_time DESC  limit ${offset},${pageSize}  `;
+
   return query(sql, value);
 };
 // 查询当前用户发布产品
@@ -147,6 +175,7 @@ let deleteProductById = function(params) {
 
 module.exports = {
   findProduct,
+  backEndfindProduct,
   findAllType,
   findProductCount,
   findProductByUser,

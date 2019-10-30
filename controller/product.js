@@ -7,11 +7,12 @@ let findProduct = function(params) {
   let value = [];
   let sql = `SELECT 
     p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
-    c.name category_name,
+    c.name category_name,u.name username,u.img_url imgUrl
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id 
+    LEFT JOIN user u ON u.id = p.owner_id
     `;
 
   if (title && !cate_id) {

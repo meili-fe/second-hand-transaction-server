@@ -11,7 +11,7 @@ const router = new Router({
 router.get('/checkPro', async (ctx, next) => {
   const { title, cate_id, pageSize = 10, page = 1 } = ctx.query;
   const params = { title, cate_id, pageSize, page };
-  await productDTO.findProduct(params).then(async res => {
+  await productDTO.backEndfindProduct(params).then(async res => {
     res.map(r => {
       let time = new Date(r.create_time);
       r.create_time = `${time.getFullYear()}-${time.getMonth() +

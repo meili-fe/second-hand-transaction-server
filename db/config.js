@@ -12,5 +12,6 @@ const config = {
   // appURL: 'localhost:3003',
   appId: 'wxf07478d878a186e2',
   secret: '3cafd782558a1439b5b2f2799dd04374',
+  tinifyKEY: 'I6CIP0zKRp3plw8dBp9CUUHeacrjCa8b',
 };
 module.exports = config;

@@ -2,10 +2,12 @@ const Router = require('koa-router');
 const Utils = require('../utils/index');
 const config = require('../db/config');
 const fs = require('fs');
+const tinify = require('tinify'); // 图片压缩
 const path = require('path');
 const asyncBusboy = require('async-busboy');
 
 const productDTO = require('../controller/product');
+tinify.key = config.tinifyKEY;
 
 const router = new Router({
   prefix: '/koa-api/product',

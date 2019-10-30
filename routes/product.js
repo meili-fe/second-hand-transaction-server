@@ -173,7 +173,7 @@ router.post('/upload', async (ctx, next) => {
     if (result) {
       let params = {
         file_name: result.hash,
-        file_path: `http://${config.CDN}/${result.key}`,
+        file_path: `https://${config.CDN}/${result.key}`,
       };
       ctx.body = Utils.formatSuccess(params);
     } else {

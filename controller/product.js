@@ -92,8 +92,9 @@ let findProductById = function(params) {
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
-    LEFT JOIN category c ON p.cate_id = c.id WHERE p.id = ?
     LEFT JOIN user u ON u.id = p.owner_id
+    LEFT JOIN category c ON p.cate_id = c.id WHERE p.id = ?
+ 
     `;
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
   let value = [id];

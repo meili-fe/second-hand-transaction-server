@@ -2,12 +2,12 @@ const Router = require('koa-router');
 const Utils = require('../utils/index');
 const config = require('../db/config');
 const fs = require('fs');
-const tinify = require('tinify'); // 图片压缩
+const uuid = require('uuid');
 const path = require('path');
 const asyncBusboy = require('async-busboy');
 
 const productDTO = require('../controller/product');
-tinify.key = config.tinifyKEY;
+const func = require('../utils/qiniu');
 
 const router = new Router({
   prefix: '/koa-api/product',
@@ -115,7 +115,7 @@ router.post('/delImgByUrl', async (ctx, next) => {
 });
 
 //上传产品图片
-router.post('/upload', async (ctx, next) => {
+router.post('/uploadlocal', async (ctx, next) => {
   const { files, fields } = await asyncBusboy(ctx.req);
   console.log('---------------');
   console.log(files[0]);
@@ -139,12 +139,46 @@ router.post('/upload', async (ctx, next) => {
     };
     // 存储图片
     let saveImg = function() {
-      let img = fs.readFileSync(file.path);
-      fs.writeFileSync(savePath, img);
-      fs.unlinkSync(file.path); //清除缓存文件
+      // let token = QINIU.uptoken(name);
+      // QINIU.uploadFile(token, name, file.path);
+
+      // let img = fs.readFileSync(file.path);
+      // fs.writeFileSync(savePath, img);
+      // fs.unlinkSync(file.path); //清除缓存文件
       ctx.body = Utils.formatSuccess(params);
     };
     await saveImg();
+  }
+});
+//上传产品图片
+router.post('/upload', async (ctx, next) => {
+  // 前端必须以formData格式进行文件的传递
+  const { files, fields } = await asyncBusboy(ctx.req);
+  if (files.length === 0) {
+    ctx.throw(500, '图片不存在');
+  } else {
+    let file = files[0];
+    console.log('~~~~~~~~~~~~~~');
+    console.log(file);
+    // 命名文件
+    const fileName = uuid.v1();
+    // 创建文件可读流
+    const reader = fs.createReadStream(file.path);
+    // 获取上传文件扩展名
+    const ext = file.filename.split('.').pop();
+    // 命名文件以及拓展名
+    const fileUrl = `${fileName}.${ext}`;
+    // 调用方法(封装在utils文件夹内)
+    const result = await func.upToQiniu(reader, fileUrl);
+    if (result) {
+      let params = {
+        file_name: result.hash,
+        file_path: `http://${config.CDN}/${result.key}`,
+      };
+      ctx.body = Utils.formatSuccess(params);
+    } else {
+      ctx.throw(500, '上传失败！');
+    }
   }
 });
 

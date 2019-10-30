@@ -113,7 +113,7 @@ let util = {
       resolve(a);
     });
   },
-  getUserInfo(code, nickName, imgUrl) {
+  getUserInfo(code, name, imgUrl) {
     return new Promise((resolve, reject) => {
       let options = {
         url: 'https://api.weixin.qq.com/sns/jscode2session',
@@ -135,7 +135,7 @@ let util = {
         // 判断用户是否存在，不存在则查询用户信息 并 落库
         const user = await userDTO.findUserByOpenId(data.openId);
         if (!user || user.length <= 0) {
-          const param = { openId: body.openid, name: nickName, imgUrl };
+          const param = { openId: body.openid, name, imgUrl };
           await userDTO.insertUser(param).then(res => {
             const { insertId } = res;
             data.userId = insertId;

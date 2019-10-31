@@ -26,7 +26,7 @@ let findProduct = function(params) {
     value.push(cate_id);
   }
 
-  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,1,2), p.create_time DESC  limit ${offset},${pageSize}  `;
+  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,1,2), p.create_time DESC,p_img.create_time ASC  limit ${offset},${pageSize}  `;
 
   //   console.log(sql);
   //   let value = ["%" + title + "%", cate_id];
@@ -74,7 +74,7 @@ let findProductByUser = function(params) {
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id WHERE owner_id = ?
     `;
-  sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   let value = [userId];
   return query(sql, value);
 };
@@ -89,14 +89,14 @@ let findProductById = function(params) {
   let sql = `SELECT 
     p.id,p.owner_id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,p.cate_id,
     c.name category_name,u.name username,u.img_url imgUrl,
-    GROUP_CONCAT( p_img.img_url ) AS img_list     
+    GROUP_CONCAT( p_img.img_url ) AS img_list
     FROM product p
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN user u ON u.id = p.owner_id
     LEFT JOIN category c ON p.cate_id = c.id WHERE p.id = ?
  
     `;
-  sql += ` GROUP BY p.id ORDER BY p.create_time DESC`;
+  sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   let value = [id];
   return query(sql, value);
 };

@@ -9,8 +9,8 @@ const router = new Router({
 
 // 后台审核使用 页面
 router.get('/checkPro', async (ctx, next) => {
-  const { title, cate_id, pageSize = 10, page = 1 } = ctx.query;
-  const params = { title, cate_id, pageSize, page };
+  const { title, status, pageSize = 10, page = 1 } = ctx.query;
+  const params = { title, status, pageSize, page };
   await productDTO.backEndfindProduct(params).then(async res => {
     res.map(r => {
       let time = new Date(r.create_time);

@@ -128,7 +128,7 @@ let insertProduct = function(params) {
 // 添加图片
 let insertProductImg = function(params) {
   let { pro_id, img_url } = params;
-  let sql = 'INSERT INTO product_img (pro_id,img_url) VALUES (?,?)';
+  let sql = 'INSERT INTO product_img (pro_id,img_url,create_time) VALUES (?,?,now())';
   let value = [pro_id, img_url];
   return query(sql, value);
 };

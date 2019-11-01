@@ -104,15 +104,16 @@ let findProductById = function(params) {
 
 // 查询产品总数
 let findProductCount = function(params) {
-  let { id } = params;
-  let sql = `SELECT count(*) FROM product `;
-  if (id) {
-    sql += ` WHERE id = ?  `;
-    let value = [id];
-    return query(sql, value);
-  } else {
-    return query(sql);
+  let { cate_id } = params;
+  console.log(params);
+  let value = [];
+  let sql = `SELECT count(*) FROM product  WHERE 1 = 1`;
+
+  if (cate_id) {
+    sql += ` AND cate_id = ?  `;
+    value.push(cate_id);
   }
+  return query(sql, value);
 };
 // 添加商品
 let insertProduct = function(params) {

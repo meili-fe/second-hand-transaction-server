@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "www": "rsync -azvP  ~/mljr/second-hand-transaction-server --exclude=node_modules/ root@39.106.138.188:/www/wwwroot/"
+    "www": "rsync -azvP  /Users/renlu/myProject/second-hand/second-hand-transaction-server --exclude=node_modules/ root@39.106.138.188:/www/wwwroot/"
   },
   "author": "",
   "license": "ISC",

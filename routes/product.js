@@ -69,19 +69,45 @@ router.post('/add', async (ctx, next) => {
 //修改商品信息
 router.post('/update', async (ctx, next) => {
   let params = ctx.request.body || {};
-  let { img_list, id } = ctx.request.body;
+  let { oldImgList, newImgList, id } = ctx.request.body;
 
-  await productDTO.updateProduct(params).then(async res => {
-    let aImg = img_list.split(',');
-    aImg.forEach(item => {
-      let params = {
-        pro_id: id,
-        img_url: item,
-      };
-      productDTO.insertProductImg(params);
-    });
-    ctx.body = Utils.formatSuccess(params, '图片添加成功');
+  // 修改商品信息
+  await productDTO.updateProduct(params);
+  //更新商品图片
+  const aImg = newImgList.split(',');
+
+  // 删除删掉的图片
+  const bImg = oldImgList.split(',');
+  const deleteImgs = [];
+  const addImgs = [];
+  bImg.map(old => {
+    if (!aImg.includes(old)) {
+      //要删掉的图
+      deleteImgs.push(old);
+    }
   });
+  aImg.map(nw => {
+    if (!bImg.includes(nw)) {
+      addImgs.push(nw);
+    }
+  });
+
+  addImgs.map(item => {
+    let params = {
+      pro_id: id,
+      img_url: item,
+    };
+    productDTO.insertProductImg(params);
+  });
+
+  deleteImgs.map(item => {
+    let params = {
+      img_url: item,
+    };
+    productDTO.deleteProductImg(params);
+  });
+
+  ctx.body = Utils.formatSuccess(params, '图片添加成功');
 });
 
 //修改商品状态

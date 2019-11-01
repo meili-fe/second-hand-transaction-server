@@ -1,4 +1,5 @@
 const { query } = require('../db');
+const func = require('../utils/qiniu');
 
 // 查询所有产品
 let findProduct = function(params) {
@@ -136,6 +137,11 @@ let deleteProductImg = function(params) {
   let { img_url } = params;
   let sql = 'DELETE FROM product_img WHERE img_url=?';
   let value = [img_url];
+
+  //删除图片文件
+  const key = img_url.substr(img_url.lastIndexOf('/') + 1);
+  func.removeFromQiniu(key);
+
   return query(sql, value);
 };
 // 修改商品信息

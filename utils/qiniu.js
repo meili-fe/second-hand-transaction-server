@@ -34,6 +34,29 @@ const upToQiniu = (filePath, key) => {
   });
 };
 
+const removeFromQiniu = key => {
+  var bucket = Config.QINIU.bucket;
+  var mac = new qiniu.auth.digest.Mac(Config.QINIU.accessKey, Config.QINIU.secretKey);
+  var config = new qiniu.conf.Config();
+  config.zone = qiniu.zone.Zone_z1;
+  var bucketManager = new qiniu.rs.BucketManager(mac, config);
+
+  return new Promise((resolved, reject) => {
+    // 以文件流的形式进行上传
+    // uploadToken是token， key是上传到七牛后保存的文件名, localFile是流文件
+    // putExtra是上传的文件参数，采用源码中的默认参数
+
+    bucketManager.delete(bucket, key, function(err, respBody, respInfo) {
+      if (err) {
+        reject(err);
+        //throw err;
+      } else {
+        resolved(respBody);
+      }
+    });
+  });
+};
 module.exports = {
   upToQiniu,
+  removeFromQiniu,
 };

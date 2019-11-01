@@ -107,7 +107,7 @@ let findProductCount = function(params) {
   let { cate_id } = params;
   console.log(params);
   let value = [];
-  let sql = `SELECT count(*) FROM product  WHERE 1 = 1`;
+  let sql = `SELECT count(*) FROM product  WHERE status in (1,2)`;
 
   if (cate_id) {
     sql += ` AND cate_id = ?  `;

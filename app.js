@@ -27,6 +27,7 @@ const allowpage = [
   '/koa-api/product/productById',
   '/koa-page/checkPro',
   '/koa-api/product/changeStatus',
+  '/koa-api/product/productByUser',
 ];
 
 //前置拦截

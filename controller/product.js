@@ -147,9 +147,9 @@ let deleteProductImg = function(params) {
 };
 // 修改商品信息
 let updateProduct = function(params) {
-  let { title, location, price, description, contact, cate_id, id } = params;
-  let sql = 'UPDATE product SET title=?,location=?,price=?,description=?,contact=?,cate_id=? WHERE id=?',
-    value = [title, location, price, description, contact, cate_id, id];
+  let { title, location, price, description, status, contact, cate_id, id } = params;
+  let sql = 'UPDATE product SET title=?,status=?,location=?,price=?,description=?,contact=?,cate_id=? WHERE id=?',
+    value = [title, status, location, price, description, contact, cate_id, id];
   return query(sql, value);
 };
 // 修改商品状态

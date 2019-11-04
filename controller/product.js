@@ -35,7 +35,7 @@ let findProduct = function(params) {
 };
 // 后台审核查看列表
 let backEndfindProduct = function(params) {
-  let { title, status, pageSize = 10, page = 1 } = params;
+  let { title, status, cate_id, pageSize = 10, page = 1 } = params;
   let offset = (page - 1) * pageSize;
   let value = [];
   let sql = `SELECT 
@@ -54,12 +54,16 @@ let backEndfindProduct = function(params) {
     sql += `and  p.title like ? `;
     value.push('%' + title + '%');
   }
-  if (status) {
+  if (status || status === 0) {
     sql += `and  p.status = ? `;
     value.push(parseInt(status));
   }
+  if (cate_id) {
+    sql += `and  p.cate_id = ? `;
+    value.push(parseInt(cate_id));
+  }
 
-  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,0,1,99,2,3), p.create_time DESC  limit ${offset},${pageSize}  `;
+  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,0), p.create_time DESC  limit ${offset},${pageSize}  `;
 
   return query(sql, value);
 };
@@ -104,14 +108,23 @@ let findProductById = function(params) {
 
 // 查询产品总数
 let findProductCount = function(params) {
-  let { cate_id } = params;
-  console.log(params);
+  let { cate_id, title, status, isShowList } = params;
   let value = [];
-  let sql = `SELECT count(*) FROM product  WHERE status in (1,2)`;
+  let sql = `SELECT count(*) FROM product  WHERE 1 = 1`;
 
   if (cate_id) {
     sql += ` AND cate_id = ?  `;
-    value.push(cate_id);
+    value.push(parseInt(cate_id));
+  }
+  if (title) {
+    sql += ` AND title like ? `;
+    value.push('%' + title + '%');
+  }
+  if (isShowList) {
+    sql += `AND status in (1,2)`;
+  } else if (status || status === 0) {
+    sql += ` AND status = ?`;
+    value.push(parseInt(status));
   }
   return query(sql, value);
 };

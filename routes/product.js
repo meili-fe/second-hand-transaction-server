@@ -15,7 +15,11 @@ const router = new Router({
 //查询产品列表
 router.post('/list', async (ctx, next) => {
   let params = ctx.request.body;
-  let oCount = await productDTO.findProductCount(params);
+  let oCount = await productDTO.findProductCount(
+    Object.assign(params, {
+      isShowList: true,
+    })
+  );
   await productDTO.findProduct(params).then(async res => {
     ctx.body = Utils.formatSuccess({
       list: res,

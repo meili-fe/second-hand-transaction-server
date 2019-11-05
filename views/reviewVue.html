@@ -71,13 +71,13 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="submit(scope.row.id,'1')">通过</el-button>
             <el-button type="danger" size="mini" @click="submit(scope.row.id,'99')">不通过</el-button>
-            <el-button type="danger" size="mini" @click="submit(scope.row.id,'3')">关闭</el-button>
+            <el-button type="danger" size="mini" @click="submit(scope.row.id,'3')">下架</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <script type="text/javascript">
-      const CATEMAP = new Map([[0, '发布'], [1, '审核通过'], [2, '已卖出'], [3, '关闭'], [99, '审核未通过']]);
+      const CATEMAP = new Map([[0, '发布'], [1, '审核通过'], [2, '已卖出'], [3, '下架'], [99, '审核未通过']]);
       var Main = {
         data() {
           return {

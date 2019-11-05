@@ -84,7 +84,7 @@
             <td>{{ p.location }}</td>
             <td>{{ p.price }}</td>
             <td>
-              {{ p.status | replace( 0, "发布") | replace( 1, "审核通过") | replace( 2, "已卖出")| replace( 3, "关闭") | replace( 99, "审核未通过") }}
+              {{ p.status | replace( 0, "发布") | replace( 1, "审核通过") | replace( 2, "已卖出")| replace( 3, "下架") | replace( 99, "审核未通过") }}
             </td>
             <td>{{ p.create_time }}</td>
             <td>{{ p.category_name }}</td>

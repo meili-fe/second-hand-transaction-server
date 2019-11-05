@@ -180,7 +180,7 @@ let updateProductImg = function(params) {
   return query(sql, value);
 };
 
-// 修改商品信息状态(0 发布 1 已卖出 2 关闭)
+// 修改商品信息状态(0 发布 1 已卖出 2 下架)
 let updateProductSataus = function(params) {
   let { status, id } = params;
   let sql = 'UPDATE product SET status=? WHERE id=?',

@@ -121,7 +121,7 @@ let findProductCount = function(params) {
     value.push('%' + title + '%');
   }
   if (isShowList) {
-    sql += `AND status in (1,2)`;
+    sql += ` AND status in (1,2)`;
   } else if (status || status === 0) {
     sql += ` AND status = ?`;
     value.push(parseInt(status));

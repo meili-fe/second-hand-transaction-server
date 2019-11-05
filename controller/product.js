@@ -63,7 +63,7 @@ let backEndfindProduct = function(params) {
     value.push(parseInt(cate_id));
   }
 
-  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,0), p.create_time DESC  limit ${offset},${pageSize}  `;
+  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,0) DESC, p.create_time DESC  limit ${offset},${pageSize}  `;
 
   return query(sql, value);
 };

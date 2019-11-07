@@ -39,7 +39,7 @@ router.post('/list', async (ctx, next) => {
 router.post('/update', async (ctx, next) => {
   let params = ctx.request.body || {};
   await userDTO.modifyUserName(params).then(res => {
-    let { insertId: id } = res;
+    let insertId = res;
     ctx.body = Utils.formatSuccess();
   });
 });
@@ -49,7 +49,6 @@ router.post('/add', async (ctx, next) => {
   let oUser = await userDTO.findUserByName(user_name);
   if (oUser.length == 0) {
     await userDTO.insertUser(ctx.request.body).then(res => {
-      let { insertId: id } = res;
       ctx.body = Utils.formatSuccess();
     });
   }
@@ -58,7 +57,7 @@ router.post('/add', async (ctx, next) => {
 router.post('/delete', async (ctx, next) => {
   let params = ctx.request.body || {};
   await userDTO.deleteUserById(params).then(res => {
-    let { insertId: id } = res;
+    let insertId = res;
     ctx.body = Utils.formatSuccess();
   });
 });

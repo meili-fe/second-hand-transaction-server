@@ -137,7 +137,7 @@ let util = {
         if (!user || user.length <= 0) {
           const param = { openId: body.openid, name, imgUrl };
           await userDTO.insertUser(param).then(res => {
-            const { insertId } = res;
+            const insertId = res;
             data.userId = insertId;
           });
         } else {

@@ -9,7 +9,7 @@ let findProduct = function(params) {
   let sql = `SELECT 
     p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
     c.name category_name,u.name username,u.img_url imgUrl,
-    GROUP_CONCAT( p_img.img_url ) AS img_list  
+    GROUP_CONCAT( p_img.img_url ) AS img_list
     FROM product p
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id 
@@ -19,20 +19,19 @@ let findProduct = function(params) {
 
   if (title) {
     offset = 0;
-    sql += `and  p.title like ? `;
+    sql += ` AND  p.title like ? `;
     value.push('%' + title + '%');
   }
   if (cate_id) {
-    sql += ` and  p.cate_id = ? `;
-    value.push(cate_id);
+    sql += ` AND  p.cate_id = ? `;
+    value.push(parseInt(cate_id));
   }
 
   sql += ` GROUP BY p.id ORDER BY FIELD(p.status,1,2), p.create_time DESC,p_img.create_time ASC  limit ${offset},${pageSize}  `;
 
-  //   console.log(sql);
-  //   let value = ["%" + title + "%", cate_id];
   return query(sql, value);
 };
+
 // 后台审核查看列表
 let backEndfindProduct = function(params) {
   let { title, status, cate_id, pageSize = 10, page = 1 } = params;
@@ -46,20 +45,20 @@ let backEndfindProduct = function(params) {
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id 
     LEFT JOIN user u ON u.id = p.owner_id
-    WHERE 1 = 1
+    WHERE 1 = 1 
     `;
 
   if (title) {
     offset = 0;
-    sql += `and  p.title like ? `;
+    sql += ` AND  p.title like ? `;
     value.push('%' + title + '%');
   }
   if (status || status === 0) {
-    sql += `and  p.status = ? `;
+    sql += ` AND  p.status = ? `;
     value.push(parseInt(status));
   }
   if (cate_id) {
-    sql += `and  p.cate_id = ? `;
+    sql += ` AND  p.cate_id = ? `;
     value.push(parseInt(cate_id));
   }
 
@@ -67,6 +66,7 @@ let backEndfindProduct = function(params) {
 
   return query(sql, value);
 };
+
 // 查询当前用户发布产品
 let findProductByUser = function(params) {
   let { ownerId, userId } = params;
@@ -88,6 +88,7 @@ let findAllType = function() {
   let sql = `SELECT id,name,description FROM category `;
   return query(sql);
 };
+
 // 查询商品详情
 let findProductById = function(params) {
   let { id } = params;
@@ -99,7 +100,6 @@ let findProductById = function(params) {
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN user u ON u.id = p.owner_id
     LEFT JOIN category c ON p.cate_id = c.id WHERE p.id = ?
- 
     `;
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   let value = [id];
@@ -131,8 +131,7 @@ let findProductCount = function(params) {
 // 添加商品
 let insertProduct = function(params) {
   let { cate_id, title, location, price, description, contact, userId } = params;
-  console.log('-----');
-  console.log(params);
+  console.log(`-----insert product => ${params}`);
   let sql =
     'INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status,create_time) VALUES (?,?,?,?,?,?,?,?,?)';
   let value = [cate_id, userId, title, location, price, description, contact, 0, new Date()];
@@ -152,7 +151,7 @@ let deleteProductImg = function(params) {
   let sql = 'DELETE FROM product_img WHERE img_url=?';
   let value = [img_url];
 
-  //删除图片文件
+  //删除服务器图片文件
   const key = img_url.substr(img_url.lastIndexOf('/') + 1);
   func.removeFromQiniu(key);
 

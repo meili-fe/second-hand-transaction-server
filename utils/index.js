@@ -4,7 +4,7 @@ const WXBizDataCrypt = require('./WXBizDataCrypt');
 const config = require('../db/config');
 const request = require('request');
 const userDTO = require('../controller/user');
-const COMMON_STATUS = require('./common');
+const COMMON = require('./common');
 
 const SECRET = 'mlxysecret';
 let util = {
@@ -64,7 +64,7 @@ let util = {
   // 错误信息格式
   formatError(err) {
     return {
-      code: err.status,
+      code: err.status || COMMON.COMMON_STATUS.PARAM_ERRO,
       msg: err.message,
       success: false,
       data: null,
@@ -72,7 +72,7 @@ let util = {
   },
   formatParamError(msg) {
     return {
-      code: COMMON_STATUS.PARAM_ERRO,
+      code: COMMON.COMMON_STATUS.PARAM_ERRO,
       msg,
       success: false,
       data: null,
@@ -81,7 +81,7 @@ let util = {
   // 成功信息包装
   formatSuccess(data = {}, msg = '操作成功') {
     return {
-      code: COMMON_STATUS.SUCCESS,
+      code: COMMON.COMMON_STATUS.SUCCESS,
       msg,
       success: true,
       data,

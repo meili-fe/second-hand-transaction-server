@@ -8,6 +8,8 @@ const asyncBusboy = require('async-busboy');
 
 const productDTO = require('../controller/product');
 const func = require('../utils/qiniu');
+const { sequelize } = require('../db');
+const Promise = require('bluebird');
 
 const router = new Router({
   prefix: '/koa-api/product',
@@ -54,20 +56,28 @@ router.post('/productById', async (ctx, next) => {
 //添加商品
 router.post('/add', async (ctx, next) => {
   let { img_list } = ctx.request.body;
-  console.log('-------');
-  console.log(ctx.state);
-  await productDTO.insertProduct(ctx.request.body).then(async res => {
-    let { insertId } = res;
-    let aImg = img_list.split(',');
-    aImg.forEach(item => {
-      let params = {
-        pro_id: insertId,
-        img_url: item,
-      };
-      productDTO.insertProductImg(params);
+  let tranArray = [];
+  return sequelize
+    .transaction(t => {
+      return productDTO.insertProduct(ctx.request.body).then(res => {
+        let insertId = res;
+        let aImg = img_list.split(',');
+        aImg.forEach(item => {
+          let params = {
+            pro_id: insertId,
+            img_url: item,
+          };
+          tranArray.push(productDTO.insertProductImg(params));
+        });
+        return Promise.all(tranArray);
+      });
+    })
+    .then(result => {
+      ctx.body = Utils.formatSuccess('图片添加成功');
+    })
+    .catch(error => {
+      ctx.body = Utils.formatError({ message: '商品添加失败' });
     });
-    ctx.body = Utils.formatSuccess('图片添加成功');
-  });
 });
 
 //修改商品信息

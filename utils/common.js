@@ -13,7 +13,6 @@ const ALLOWPAGE = [
   '/koa-api/product/productById',
   '/koa-page/checkPro',
   '/koa-api/product/changeStatus',
-  '/koa-api/relation/collect',
   '/koa-api/relation/listByUser',
   '/koa-api/relation/getCount',
   '/koa-api/user/relationList',

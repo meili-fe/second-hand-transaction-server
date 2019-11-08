@@ -7,6 +7,7 @@ const path = require('path');
 const asyncBusboy = require('async-busboy');
 
 const productDTO = require('../controller/product');
+const relationDTO = require('../controller/relation');
 const func = require('../utils/qiniu');
 const { sequelize } = require('../db');
 const Promise = require('bluebird');
@@ -23,8 +24,20 @@ router.post('/list', async (ctx, next) => {
     })
   );
   await productDTO.findProduct(params).then(async res => {
+    const promises = res.map(async item => {
+      let collectCount = await relationDTO.getCountById({ type: 0, id: item.id });
+      let praiseCount = await relationDTO.getCountById({ type: 1, id: item.id });
+      return Object.assign(
+        {
+          collectCount: collectCount[0].count,
+          praiseCount: praiseCount[0].count,
+        },
+        item
+      );
+    });
+    const resList = await Promise.all(promises);
     ctx.body = Utils.formatSuccess({
-      list: res,
+      list: resList,
       page: params.page,
       pageSize: params.pageSize,
       totalCount: oCount[0]['count(*)'],

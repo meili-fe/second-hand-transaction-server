@@ -12,5 +12,6 @@ const ALLOWPAGE = [
   '/koa-api/product/productById',
   '/koa-page/checkPro',
   '/koa-api/product/changeStatus',
+  '/koa-api/meaasgeBoard/getMsgBoard',
 ];
 module.exports = { COMMON_STATUS, ALLOWPAGE };

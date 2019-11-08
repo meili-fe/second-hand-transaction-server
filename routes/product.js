@@ -7,6 +7,8 @@ const path = require('path');
 const asyncBusboy = require('async-busboy');
 
 const productDTO = require('../controller/product');
+const messageDTO = require('../controller/messageBoard');
+
 const func = require('../utils/qiniu');
 const { sequelize } = require('../db');
 const Promise = require('bluebird');
@@ -48,8 +50,39 @@ router.post('/productByUser', async (ctx, next) => {
 //查询商品详情
 router.post('/productById', async (ctx, next) => {
   let params = ctx.request.body;
+  const { id } = params;
+  if (!id) {
+    ctx.body = Utils.formatError({ message: '商品id不能为空' });
+    return;
+  }
+  let firstLevel = [];
+
+  await messageDTO.getAllByPro({ proId: id }).then(async res => {
+    // 查询当前商品下所有留言 => 转换成子树结构
+    let children = [];
+    res.map(r => {
+      if (!r.parentId) {
+        firstLevel.push(r);
+      } else {
+        children.push(r);
+      }
+    });
+    firstLevel.map(f => {
+      const parentId = f.id;
+      f.children = [];
+      children.map(c => {
+        if (parentId == c.parentId) {
+          f.children.push(c);
+        }
+      });
+    });
+  });
   await productDTO.findProductById(params).then(async res => {
-    ctx.body = Utils.formatSuccess(res[0]);
+    ctx.body = Utils.formatSuccess(
+      Object.assign(res[0], {
+        messageBoard: firstLevel,
+      })
+    );
   });
 });
 

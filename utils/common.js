@@ -6,6 +6,7 @@ const COMMON_STATUS = {
 //定义允许直接访问的url
 const ALLOWPAGE = [
   '/koa-api/user/login',
+  '/koa-api/user/saleList',
   '/koa-api/product/allType',
   '/koa-api/product/list',
   '/koa-api/product/upload',
@@ -13,5 +14,8 @@ const ALLOWPAGE = [
   '/koa-page/checkPro',
   '/koa-api/product/changeStatus',
   '/koa-api/meaasgeBoard/getMsgBoard',
+  '/koa-api/relation/listByUser',
+  '/koa-api/relation/getCount',
+  '/koa-api/user/relationList',
 ];
 module.exports = { COMMON_STATUS, ALLOWPAGE };

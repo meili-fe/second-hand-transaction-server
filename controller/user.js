@@ -68,6 +68,28 @@ let updateUserImg = function(params) {
   let value = [file_name, file_path, user_id];
   return query(sql, value);
 };
+// 查询卖出商品列表用户顺序
+let findProOrderBySaled = function() {
+  // WHERE p.status = 2
+  let sql = `SELECT count(*) saleCount, u.name,u.img_url imgUrl,u.id userId FROM user u 
+  LEFT JOIN product p ON u.id = p.owner_id 
+  WHERE p.status = 2
+  GROUP BY u.id ORDER BY saleCount DESC
+  `;
+  let value = [];
+  return query(sql, value);
+};
+// 点赞/收藏-最多
+let findProOrderByRelation = function(params) {
+  let { type } = params;
+  let sql = `SELECT count(*) count, u.name,u.img_url imgUrl,u.id userId FROM user u 
+  LEFT JOIN relation r ON u.id = r.user_id 
+  WHERE r.type = ? AND r.status = 0
+  GROUP BY u.id ORDER BY count DESC
+  `;
+  let value = [type];
+  return query(sql, value);
+};
 
 module.exports = {
   findUser,
@@ -80,4 +102,6 @@ module.exports = {
   findUserImgCount,
   updateUserImg,
   uploadUserImg,
+  findProOrderBySaled,
+  findProOrderByRelation,
 };

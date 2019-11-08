@@ -61,5 +61,18 @@ router.post('/delete', async (ctx, next) => {
     ctx.body = Utils.formatSuccess();
   });
 });
+//查询用户卖出商品最多列表
+router.post('/saleList', async (ctx, next) => {
+  await userDTO.findProOrderBySaled().then(res => {
+    ctx.body = Utils.formatSuccess(res);
+  });
+});
+//查询用户收藏/点赞列表
+router.post('/relationList', async (ctx, next) => {
+  let params = ctx.request.body || {};
+  await userDTO.findProOrderByRelation(params).then(res => {
+    ctx.body = Utils.formatSuccess(res);
+  });
+});
 
 module.exports = router;

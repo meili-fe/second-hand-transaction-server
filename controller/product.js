@@ -62,7 +62,7 @@ let backEndfindProduct = function(params) {
     value.push(parseInt(cate_id));
   }
 
-  sql += ` GROUP BY p.id ORDER BY FIELD(p.status,0) DESC, p.create_time DESC  limit ${offset},${pageSize}  `;
+  sql += ` GROUP BY p.id ORDER BY p.create_time DESC  limit ${offset},${pageSize}  `;
 
   return query(sql, value);
 };
@@ -194,7 +194,14 @@ let deleteProductById = function(params) {
   return query(sql, value);
 };
 
+let getCateListBack = function() {
+  let sql =
+    'SELECT count(1) count ,p.cate_id, c.name from product p LEFT JOIN category c on p.cate_id = c.id GROUP BY p.cate_id ORDER BY count(*) DESC';
+  return query(sql);
+};
+
 module.exports = {
+  getCateListBack,
   findProduct,
   backEndfindProduct,
   findAllType,

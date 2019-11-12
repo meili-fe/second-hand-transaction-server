@@ -35,4 +35,11 @@ router.post('/checkPro', async (ctx, next) => {
   });
 });
 
+router.get('/cateList', async (ctx, next) => {
+  let list = await productDTO.getCateListBack();
+  ctx.body = Utils.formatSuccess({
+    list,
+  });
+});
+
 module.exports = router;

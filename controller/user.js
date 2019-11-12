@@ -33,10 +33,10 @@ let findUserByOpenId = function(openId) {
   return query(sql, value);
 };
 let insertUser = function(params) {
-  let { openId, name, imgUrl } = params;
+  let { openId, name, imgUrl, sex } = params;
   console.log(openId);
-  let sql = 'INSERT INTO user (open_id,name,img_url,create_time) VALUES (?,?,?,?)';
-  let value = [openId, name, imgUrl, new Date()];
+  let sql = 'INSERT INTO user (open_id,name,img_url,create_time,sex) VALUES (?,?,?,?,?)';
+  let value = [openId, name, imgUrl, new Date(), sex];
   return query(sql, value);
 };
 let deleteUserById = function(params) {

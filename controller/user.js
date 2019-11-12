@@ -83,7 +83,7 @@ let findProOrderBySaled = function() {
 let findProOrderByRelation = function(params) {
   let { type } = params;
   let sql = `SELECT count(*) count, u.name,u.img_url imgUrl,u.id userId FROM user u 
-  LEFT JOIN relation r ON u.id = r.user_id 
+  LEFT JOIN relation r ON u.id = r.target_user_id 
   WHERE r.type = ? AND r.status = 0
   GROUP BY u.id ORDER BY count DESC
   `;

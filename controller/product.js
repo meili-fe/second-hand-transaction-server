@@ -3,11 +3,11 @@ const func = require('../utils/qiniu');
 
 // 查询所有产品
 let findProduct = function(params) {
-  let { title, cate_id, pageSize = 10, page = 1 } = params;
+  let { title, cate_id, location, pageSize = 10, page = 1 } = params;
   let offset = (page - 1) * pageSize;
   let value = [];
   let sql = `SELECT 
-    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.original, p.team,p.create_time,p.update_time,
     c.name category_name,u.name username,u.img_url imgUrl,
     GROUP_CONCAT( p_img.img_url ) AS img_list
     FROM product p
@@ -22,6 +22,11 @@ let findProduct = function(params) {
     sql += ` AND  p.title like ? `;
     value.push('%' + title + '%');
   }
+  if (location) {
+    offset = 0;
+    sql += ` AND  p.location = ? `;
+    value.push(parseInt(location));
+  }
   if (cate_id) {
     sql += ` AND  p.cate_id = ? `;
     value.push(parseInt(cate_id));
@@ -34,7 +39,7 @@ let findProduct = function(params) {
 
 // 后台审核查看列表
 let backEndfindProduct = function(params) {
-  let { title, status, cate_id, pageSize = 10, page = 1 } = params;
+  let { title, status, cate_id, location, pageSize = 10, page = 1 } = params;
   let offset = (page - 1) * pageSize;
   let value = [];
   let sql = `SELECT 
@@ -71,7 +76,7 @@ let backEndfindProduct = function(params) {
 let findProductByUser = function(params) {
   let { ownerId, userId } = params;
   let sql = `SELECT 
-    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
+    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.original, p.team,p.create_time,p.update_time,
     c.name category_name,
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p
@@ -93,7 +98,7 @@ let findAllType = function() {
 let findProductById = function(params) {
   let { id } = params;
   let sql = `SELECT 
-    p.id,p.owner_id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,p.cate_id,
+    p.id,p.owner_id,p.title,p.location,p.price,p.contact,p.description,p.original, p.team,p.status,p.create_time,p.update_time,p.cate_id,
     c.name category_name,u.name username,u.img_url imgUrl,
     GROUP_CONCAT( p_img.img_url ) AS img_list
     FROM product p
@@ -130,11 +135,11 @@ let findProductCount = function(params) {
 };
 // 添加商品
 let insertProduct = function(params) {
-  let { cate_id, title, location, price, description, contact, userId } = params;
+  let { cate_id, title, location, price, description, contact, original, team, userId } = params;
   console.log(`-----insert product => ${params}`);
   let sql =
-    'INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status,create_time) VALUES (?,?,?,?,?,?,?,?,?)';
-  let value = [cate_id, userId, title, location, price, description, contact, 0, new Date()];
+    'INSERT INTO product (cate_id,owner_id,title,location,price,description,contact,status,original,team,create_time) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
+  let value = [cate_id, userId, title, location, price, description, contact, 0, original, team, new Date()];
   return query(sql, value);
 };
 
@@ -159,9 +164,10 @@ let deleteProductImg = function(params) {
 };
 // 修改商品信息
 let updateProduct = function(params) {
-  let { title, location, price, description, status, contact, cate_id, id } = params;
-  let sql = 'UPDATE product SET title=?,status=?,location=?,price=?,description=?,contact=?,cate_id=? WHERE id=?',
-    value = [title, status, location, price, description, contact, cate_id, id];
+  let { title, location, price, description, status, contact, cate_id, id, original, team } = params;
+  let sql =
+      'UPDATE product SET title=?,status=?,location=?,price=?,description=?,contact=?,cate_id=?,original=?, team=? WHERE id=?',
+    value = [title, status, location, price, description, contact, cate_id, original, team, id];
   return query(sql, value);
 };
 // 修改商品状态
@@ -179,7 +185,7 @@ let updateProductImg = function(params) {
   return query(sql, value);
 };
 
-// 修改商品信息状态(0 发布 1 已卖出 2 下架)
+// 修改商品信息状态(0 发布 1 已卖出 2 关闭)
 let updateProductSataus = function(params) {
   let { status, id } = params;
   let sql = 'UPDATE product SET status=? WHERE id=?',

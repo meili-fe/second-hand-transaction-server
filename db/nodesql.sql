@@ -28,7 +28,7 @@ CREATE TABLE `product` (
   `price` DECIMAL(10,2) DEFAULT NULL COMMENT '金额',
   `description` varchar(400) DEFAULT NULL COMMENT '描述',
   `contact` varchar(40) DEFAULT NULL COMMENT '联系方式',
-  `status` tinyint(5) DEFAULT '0' COMMENT '状态(0 发布 1 已卖出 2 下架)',
+  `status` tinyint(5) DEFAULT '0' COMMENT '状态(0 发布 1 已卖出 2 关闭)',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)

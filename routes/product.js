@@ -91,8 +91,18 @@ router.post('/productById', async (ctx, next) => {
     });
   });
   await productDTO.findProductById(params).then(async res => {
+    let detail = res[0];
+    let collectCount = await relationDTO.getCountById({ type: 0, id: detail.id });
+    let praiseCount = await relationDTO.getCountById({ type: 1, id: detail.id });
+    let result = Object.assign(
+      {
+        collectCount: collectCount[0].count,
+        praiseCount: praiseCount[0].count,
+      },
+      detail
+    );
     ctx.body = Utils.formatSuccess(
-      Object.assign(res[0], {
+      Object.assign(result, {
         messageBoard: firstLevel,
       })
     );

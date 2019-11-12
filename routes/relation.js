@@ -42,5 +42,12 @@ router.post('/getCount', async (ctx, next) => {
   };
   ctx.body = Utils.formatSuccess(res);
 });
+// 查询某件商品被登录用户点赞，收藏的状态
+router.post('/getStatusByUser', async (ctx, next) => {
+  let params = ctx.request.body || {};
+  await relationDTO.getStatusByUser(params).then(async res => {
+    ctx.body = Utils.formatSuccess(res);
+  });
+});
 
 module.exports = router;

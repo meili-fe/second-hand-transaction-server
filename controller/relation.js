@@ -3,9 +3,9 @@ const func = require('../utils/qiniu');
 
 // 添加收藏/点赞
 let insertRelationPro = function(params) {
-  let { userId, proId, type, status } = params;
-  let sql = 'INSERT INTO relation (user_id,pro_id,type,status,create_time) VALUES (?,?,?,?,?)';
-  let value = [userId, proId, type, status, new Date()];
+  let { userId, targetUserId, proId, type, status } = params;
+  let sql = 'INSERT INTO relation (user_id,target_user_id,pro_id,type,status,create_time) VALUES (?,?,?,?,?,?)';
+  let value = [userId, targetUserId, proId, type, status, new Date()];
   return query(sql, value);
 };
 // 修改收藏/点赞
@@ -49,6 +49,7 @@ let relationProList = function(params) {
     LEFT JOIN product p ON r.user_id = p.owner_id  AND r.pro_id = p.id
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id WHERE owner_id = ? AND r.status = 0
+    AND date_sub(curdate(), INTERVAL 30 DAY) <= date(p.update_time);
   `;
   let value = [];
   return query(sql, value);
@@ -64,6 +65,17 @@ let getCountById = function(params) {
   let value = [id, type];
   return query(sql, value);
 };
+// 查询某件商品被登录用户点赞，收藏的状态
+let getStatusByUser = function(params) {
+  let { proId, userId } = params;
+  let sql = `
+    SELECT type,status  FROM relation r
+    WHERE r.pro_id = ?  AND r.user_id = ?
+  `;
+  let value = [proId, userId];
+  return query(sql, value);
+};
+
 module.exports = {
   insertRelationPro,
   updateRelationPro,
@@ -71,4 +83,5 @@ module.exports = {
   searchRelationByUserAndPro,
   relationProList,
   getCountById,
+  getStatusByUser,
 };

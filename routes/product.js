@@ -7,7 +7,12 @@ const path = require('path');
 const asyncBusboy = require('async-busboy');
 
 const productDTO = require('../controller/product');
+const messageDTO = require('../controller/messageBoard');
+
+const relationDTO = require('../controller/relation');
 const func = require('../utils/qiniu');
+const { sequelize } = require('../db');
+const Promise = require('bluebird');
 
 const router = new Router({
   prefix: '/koa-api/product',
@@ -21,8 +26,20 @@ router.post('/list', async (ctx, next) => {
     })
   );
   await productDTO.findProduct(params).then(async res => {
+    const promises = res.map(async item => {
+      let collectCount = await relationDTO.getCountById({ type: 0, id: item.id });
+      let praiseCount = await relationDTO.getCountById({ type: 1, id: item.id });
+      return Object.assign(
+        {
+          collectCount: collectCount[0].count,
+          praiseCount: praiseCount[0].count,
+        },
+        item
+      );
+    });
+    const resList = await Promise.all(promises);
     ctx.body = Utils.formatSuccess({
-      list: res,
+      list: resList,
       page: params.page,
       pageSize: params.pageSize,
       totalCount: oCount[0]['count(*)'],
@@ -46,28 +63,67 @@ router.post('/productByUser', async (ctx, next) => {
 //查询商品详情
 router.post('/productById', async (ctx, next) => {
   let params = ctx.request.body;
+  const { id } = params;
+  if (!id) {
+    ctx.body = Utils.formatError({ message: '商品id不能为空' });
+    return;
+  }
+  let firstLevel = [];
+
+  await messageDTO.getAllByPro({ proId: id }).then(async res => {
+    // 查询当前商品下所有留言 => 转换成子树结构
+    let children = [];
+    res.map(r => {
+      if (!r.parentId) {
+        firstLevel.push(r);
+      } else {
+        children.push(r);
+      }
+    });
+    firstLevel.map(f => {
+      const parentId = f.id;
+      f.children = [];
+      children.map(c => {
+        if (parentId == c.parentId) {
+          f.children.push(c);
+        }
+      });
+    });
+  });
   await productDTO.findProductById(params).then(async res => {
-    ctx.body = Utils.formatSuccess(res[0]);
+    ctx.body = Utils.formatSuccess(
+      Object.assign(res[0], {
+        messageBoard: firstLevel,
+      })
+    );
   });
 });
 
 //添加商品
 router.post('/add', async (ctx, next) => {
   let { img_list } = ctx.request.body;
-  console.log('-------');
-  console.log(ctx.state);
-  await productDTO.insertProduct(ctx.request.body).then(async res => {
-    let { insertId } = res;
-    let aImg = img_list.split(',');
-    aImg.forEach(item => {
-      let params = {
-        pro_id: insertId,
-        img_url: item,
-      };
-      productDTO.insertProductImg(params);
+  let tranArray = [];
+  return sequelize
+    .transaction(t => {
+      return productDTO.insertProduct(ctx.request.body).then(res => {
+        let insertId = res;
+        let aImg = img_list.split(',');
+        aImg.forEach(item => {
+          let params = {
+            pro_id: insertId,
+            img_url: item,
+          };
+          tranArray.push(productDTO.insertProductImg(params));
+        });
+        return Promise.all(tranArray);
+      });
+    })
+    .then(result => {
+      ctx.body = Utils.formatSuccess('图片添加成功');
+    })
+    .catch(error => {
+      ctx.body = Utils.formatError({ message: '商品添加失败' });
     });
-    ctx.body = Utils.formatSuccess('图片添加成功');
-  });
 });
 
 //修改商品信息

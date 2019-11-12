@@ -33,12 +33,13 @@
         </el-col>
         <el-col :span="6">
           <el-button type="primary" @click="searchList">查询</el-button> <el-button @click="reset()">重置</el-button>
+          <el-button type="primary" @click="searchCate">分类排名</el-button>
         </el-col>
       </el-row>
 
       <el-pagination layout="total,prev, pager, next" :total="page.totalCount" @current-change="changePage">
       </el-pagination>
-      <el-table :data="tableData" style="width: 100%" height="600">
+      <el-table :data="tableData" style="width: 100%" height="600" :row-class-name="tableRowClassName">
         <el-table-column prop="id" label="id" width="50"> </el-table-column>
         <el-table-column prop="title" label="标题" width="180"> </el-table-column>
         <el-table-column prop="description" label="描述" width="180"> </el-table-column>
@@ -56,7 +57,7 @@
         </el-table-column>
         <el-table-column label="坐标">
           <template slot-scope="scope">
-            {{ scope.row.location == '0' ? '6层' : '20层' }}
+            {{ scope.row.location | getLocation }}
           </template>
         </el-table-column>
         <el-table-column prop="price" label="价格"> </el-table-column>
@@ -75,6 +76,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-dialog title="类别排序" :visible.sync="dialogVisible" width="30%">
+        <el-table :data="cateData">
+          <el-table-column prop="name" label="分类名称"> </el-table-column>
+          <el-table-column prop="count" label="数量"> </el-table-column>
+        </el-table>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
     <script type="text/javascript">
       const CATEMAP = new Map([[0, '发布'], [1, '审核通过'], [2, '已卖出'], [3, '下架'], [99, '审核未通过']]);
@@ -93,6 +103,8 @@
               totalCount: 0,
               current: 1,
             },
+            dialogVisible: false,
+            cateData: [],
           };
         },
         created() {
@@ -102,6 +114,20 @@
         filters: {
           getStatus(status) {
             return CATEMAP.get(status) || '---';
+          },
+          getLocation(value) {
+            switch (value) {
+              case '0':
+                return '绿地6楼';
+              case '1':
+                return '绿地20楼';
+              case '2':
+                return '上海28楼';
+              case '3':
+                return '上海29楼';
+              default:
+                return '---';
+            }
           },
         },
         methods: {
@@ -154,6 +180,23 @@
               },
             });
           },
+          searchCate() {
+            let that = this;
+            $.ajax({
+              //请求方式
+              type: 'get',
+              //请求的媒体类型
+              url: '/koa-page/cateList',
+              //请求成功
+              success: function(result) {
+                const res = result.data.list;
+                that.cateData = res;
+                that.dialogVisible = true;
+              },
+              //请求失败，包含具体的错误信息
+              error: function(e) {},
+            });
+          },
           searchList() {
             this.page = {
               current: 1,
@@ -182,14 +225,32 @@
               data: JSON.stringify({ status, id }),
               //请求成功
               success: function(result) {
+                that.$notify({
+                  type: 'success',
+                  title: 'success',
+                  message: '操作成功',
+                });
                 that.getList();
               },
               //请求失败，包含具体的错误信息
               error: function(e) {
-                console.log(e.status);
-                console.log(e.responseText);
+                that.$notify({
+                  type: 'error',
+                  title: 'fail',
+                  message: '操作失败',
+                });
               },
             });
+          },
+          tableRowClassName({ row, rowIndex }) {
+            if (row.status == 99) {
+              return 'red';
+            } else if (row.status == 2 || row.status == 3) {
+              return 'grey';
+            } else if (row.status == 1) {
+              return 'green';
+            }
+            return '';
           },
         },
       };
@@ -206,5 +267,14 @@
     width: 50px !important;
     height: 50px !important;
     margin-right: 5px;
+  }
+  .grey {
+    background-color: #edebec !important;
+  }
+  .red {
+    background-color: #ebc1c1 !important;
+  }
+  .green {
+    background-color: #d8f2dd !important;
   }
 </style>

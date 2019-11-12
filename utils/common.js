@@ -3,5 +3,20 @@ const COMMON_STATUS = {
   SUCCESS: 0,
   PARAM_ERRO: 1,
 };
-
-module.exports = COMMON_STATUS;
+//定义允许直接访问的url
+const ALLOWPAGE = [
+  '/koa-api/user/login',
+  '/koa-api/user/saleList',
+  '/koa-api/product/allType',
+  '/koa-api/product/list',
+  '/koa-api/product/upload',
+  '/koa-api/product/productById',
+  '/koa-page/checkPro',
+  '/koa-api/product/changeStatus',
+  '/koa-api/meaasgeBoard/getMsgBoard',
+  '/koa-api/relation/listByUser',
+  '/koa-api/relation/getCount',
+  '/koa-api/user/relationList',
+  '/koa-page/cateList',
+];
+module.exports = { COMMON_STATUS, ALLOWPAGE };

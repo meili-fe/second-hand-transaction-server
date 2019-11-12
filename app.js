@@ -13,22 +13,10 @@ const cors = require('koa-cors');
 const router = require('./routes');
 const graphql = require('./graphql');
 
-const COMMON_STATUS = require('./utils/common');
+const COMMON = require('./utils/common');
 
 // nunjucks
 const templating = require('./templating'); //将nunjucks绑定给 ctx
-
-//定义允许直接访问的url
-const allowpage = [
-  '/koa-api/user/login',
-  '/koa-api/product/allType',
-  '/koa-api/product/list',
-  '/koa-api/product/upload',
-  '/koa-api/product/productById',
-  '/koa-page/checkPro',
-  '/koa-api/product/changeStatus',
-  '/koa-api/product/productByUser',
-];
 
 //前置拦截
 function localFilter(ctx, next) {
@@ -36,10 +24,10 @@ function localFilter(ctx, next) {
   const pos = url.indexOf('?');
   pos !== -1 ? (url = url.substring(0, pos)) : '';
   let token = ctx.header.token;
-  if (allowpage.indexOf(url) == -1) {
+  if (COMMON.ALLOWPAGE.indexOf(url) == -1) {
     if (!token) {
       ctx.body = utils.formatError({
-        status: COMMON_STATUS.NEED_LOGIN,
+        status: COMMON.COMMON_STATUS.NEED_LOGIN,
         message: '请重新登陆',
       });
       return;
@@ -52,7 +40,7 @@ function localFilter(ctx, next) {
     if (now > expireTime) {
       // 过期
       ctx.body = utils.formatError({
-        status: COMMON_STATUS.NEED_LOGIN,
+        status: COMMON.COMMON_STATUS.NEED_LOGIN,
         message: '登录超时请重新登录',
       });
     } else {
@@ -101,7 +89,7 @@ app.on('error', (err, ctx) => {
 app.use(async (ctx, next) => {
   localFilter(ctx, next);
   // 判断若已登陆 继续请求
-  if (!(ctx.body && ctx.body.code === COMMON_STATUS.NEED_LOGIN)) {
+  if (!(ctx.body && ctx.body.code === COMMON.COMMON_STATUS.NEED_LOGIN)) {
     await next();
   }
 });

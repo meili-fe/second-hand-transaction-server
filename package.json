@@ -1,0 +1,53 @@
+{
+  "name": "second-hand",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "www": "rsync -azvP  /Users/liangjingxian/mljr/second-hand-transaction-server --exclude=node_modules/ root@39.106.138.188:/www/wwwroot/"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-koa": "^2.9.7",
+    "async-busboy": "^0.7.0",
+    "cls-hooked": "^4.2.2",
+    "fs": "0.0.1-security",
+    "graphql": "^14.5.8",
+    "is": "^3.3.0",
+    "koa": "^2.5.1",
+    "koa-body": "^4.1.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-cors": "0.0.16",
+    "koa-json": "^2.0.2",
+    "koa-json-error": "^3.1.2",
+    "koa-logger": "^3.2.0",
+    "koa-onerror": "^4.1.0",
+    "koa-parameter": "^3.0.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "koa-views": "^5.2.1",
+    "lodash": "^4.17.15",
+    "module-alias": "^2.2.2",
+    "mysql": "^2.16.0",
+    "mysql2": "^2.0.0",
+    "nodemon": "^1.8.1",
+    "nunjucks": "^3.2.0",
+    "path": "^0.12.7",
+    "qiniu": "^7.2.2",
+    "request": "^2.88.0",
+    "require-directory": "^2.1.1",
+    "sequelize": "^5.21.2",
+    "tinify": "^1.6.0-beta.2",
+    "uuid": "^3.3.3"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "_moduleAliases": {
+    "@model": "model"
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>图片上传</title>
+  </head>
+  <body>
+    <script src="http://unpkg.com/vue/dist/vue.js"></script>
+    <script src="http://unpkg.com/element-ui@2.12.0/lib/index.js"></script>
+    <link rel="stylesheet" href="http://unpkg.com/element-ui@2.12.0/lib/theme-chalk/index.css" />
+    <div id="app">
+      <el-upload
+        class="upload-demo"
+        action="http://second-hand.ganksolo.com/koa-api/product/upload"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="13"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">
+          只能上传jpg/png文件，且不超过500kb
+        </div>
+      </el-upload>
+    </div>
+    <script>
+      var Main = {
+        data() {
+          return {
+            fileList: [],
+          };
+        },
+        methods: {
+          handleRemove(file, fileList) {
+            console.log(file, fileList);
+          },
+          handlePreview(file) {
+            console.log(file);
+          },
+          handleExceed(files, fileList) {
+            this.$message.warning(
+              `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length +
+                fileList.length} 个文件`
+            );
+          },
+          beforeRemove(file, fileList) {
+            return this.$confirm(`确定移除 ${file.name}？`);
+          },
+        },
+      };
+      var Ctor = Vue.extend(Main);
+      new Ctor().$mount('#app');
+    </script>
+  </body>
+</html>

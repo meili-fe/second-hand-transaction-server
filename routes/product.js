@@ -17,6 +17,20 @@ const Promise = require('bluebird');
 const router = new Router({
   prefix: '/koa-api/product',
 });
+
+router.get('/configs', async (ctx, next) => {
+  const config = {};
+  await productDTO.getConfig().then(res => {
+    res.map(d => {
+      d.biz_value = JSON.parse(d.biz_value);
+    });
+    config.sys = res;
+  });
+  await productDTO.findAllType().then(async res => {
+    config.cate = res;
+  });
+  ctx.body = Utils.formatSuccess(config);
+});
 //查询产品列表
 router.post('/list', async (ctx, next) => {
   let params = ctx.request.body;

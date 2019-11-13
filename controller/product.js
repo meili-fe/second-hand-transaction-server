@@ -206,7 +206,12 @@ let getCateListBack = function() {
   return query(sql);
 };
 
+let getConfig = function() {
+  let sql = 'SELECT * from sys_conf';
+  return query(sql);
+};
 module.exports = {
+  getConfig,
   getCateListBack,
   findProduct,
   backEndfindProduct,

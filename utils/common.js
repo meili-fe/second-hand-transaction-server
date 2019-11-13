@@ -18,5 +18,6 @@ const ALLOWPAGE = [
   '/koa-api/relation/getCount',
   '/koa-api/user/relationList',
   '/koa-page/cateList',
+  '/koa-api/product/configs',
 ];
 module.exports = { COMMON_STATUS, ALLOWPAGE };

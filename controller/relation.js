@@ -26,14 +26,16 @@ let searchRelationByUserAndPro = function(params) {
 //查询当前用户收藏商品列表
 let searchProListByUser = function(params) {
   let { userId } = params;
-  let sql = `SELECT 
-    p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,
+  let sql = `
+  SELECT
+    r.user_id userId,p.id proId,p.title,p.location,p.original,p.team,p.price,p.contact,p.description,p.status,p.create_time,p.update_time,r.type,
     c.name category_name,
-    GROUP_CONCAT( p_img.img_url ) AS img_list     
-    FROM relation r 
-    LEFT JOIN product p ON r.user_id = p.owner_id  AND r.pro_id = p.id
-    LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
-    LEFT JOIN category c ON p.cate_id = c.id WHERE owner_id = ? AND r.status = 0
+    GROUP_CONCAT( p_img.img_url ) AS img_list
+    FROM relation r
+    LEFT JOIN product p ON r.user_id = p.owner_id  
+    LEFT JOIN product_img p_img ON p.id = p_img.pro_id
+    LEFT JOIN category c ON p.cate_id = c.id 
+    WHERE owner_id = ? AND r.status = 0 AND  r.type = 1
     `;
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   let value = [userId];

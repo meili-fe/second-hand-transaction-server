@@ -32,10 +32,10 @@ let searchProListByUser = function(params) {
     c.name category_name,
     GROUP_CONCAT( p_img.img_url ) AS img_list
     FROM relation r
-    LEFT JOIN product p ON r.user_id = p.owner_id  
+    LEFT JOIN product p ON r.pro_id = p.id  
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id
     LEFT JOIN category c ON p.cate_id = c.id 
-    WHERE owner_id = ? AND r.status = 0 AND  r.type = 1
+    WHERE r.user_id = ? AND r.status = 0 AND  r.type = 1
     `;
   sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   let value = [userId];

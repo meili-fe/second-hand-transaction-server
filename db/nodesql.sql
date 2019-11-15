@@ -79,3 +79,19 @@ CREATE TABLE `sys_conf` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='参数表';
+
+
+
+CREATE TABLE `purchase` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `cate_id` int(11) DEFAULT NULL COMMENT '类别id',
+  `owner_id` int(11) NOT NULL COMMENT '所属员工',
+  `title` varchar(20) DEFAULT NULL COMMENT '求购名称',
+  `low_price` decimal(10,2) DEFAULT NULL COMMENT '低价',
+  `high_price` decimal(10,2) DEFAULT NULL COMMENT '高价',
+  `description` varchar(800) DEFAULT NULL COMMENT '描述',
+  `status` tinyint(5) DEFAULT '0' COMMENT '状态(0 发布 1 下架 )',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='求购表';

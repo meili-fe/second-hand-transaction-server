@@ -84,7 +84,7 @@ router.post('/productById', async (ctx, next) => {
   }
   let firstLevel = [];
 
-  await messageDTO.getAllByPro({ proId: id }).then(async res => {
+  await messageDTO.getAllByPro({ proId: id, type: 0 }).then(async res => {
     // 查询当前商品下所有留言 => 转换成子树结构
     let children = [];
     res.map(r => {
@@ -106,6 +106,10 @@ router.post('/productById', async (ctx, next) => {
   });
   await productDTO.findProductById(params).then(async res => {
     let detail = res[0];
+    if (!res[0]) {
+      ctx.body = Utils.formatError({ message: '未查询到商品' });
+      return;
+    }
     let collectCount = await relationDTO.getCountById({ type: 0, id: detail.id });
     let praiseCount = await relationDTO.getCountById({ type: 1, id: detail.id });
     let result = Object.assign(

@@ -51,8 +51,37 @@ router.post('/purchaseById', async (ctx, next) => {
     ctx.body = Utils.formatError({ message: '求购id不能为空' });
     return;
   }
+  let firstLevel = [];
+
+  await messageDTO.getAllByPro({ proId: id, type: 1 }).then(async res => {
+    let children = [];
+    res.map(r => {
+      if (!r.parentId) {
+        firstLevel.push(r);
+      } else {
+        children.push(r);
+      }
+    });
+    firstLevel.map(f => {
+      const parentId = f.id;
+      f.children = [];
+      children.map(c => {
+        if (parentId == c.parentId) {
+          f.children.push(c);
+        }
+      });
+    });
+  });
   await purchaseDTO.findPurchaseById(params).then(async res => {
-    ctx.body = Utils.formatSuccess(res[0]);
+    if (!res[0]) {
+      ctx.body = Utils.formatError({ message: '未查询到商品' });
+      return;
+    }
+    ctx.body = Utils.formatSuccess(
+      Object.assign(res[0], {
+        messageBoard: firstLevel,
+      })
+    );
   });
 });
 

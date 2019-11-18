@@ -74,7 +74,9 @@ let backEndfindProduct = function(params) {
 
 // 查询当前用户发布产品
 let findProductByUser = function(params) {
-  let { ownerId, userId } = params;
+  let { ownerId, status, userId } = params;
+  console.log(params);
+  let value = [];
   let sql = `SELECT 
     p.id,p.title,p.location,p.price,p.contact,p.description,p.status,p.original, p.team,p.create_time,p.update_time,
     c.name category_name,
@@ -83,9 +85,13 @@ let findProductByUser = function(params) {
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 
     LEFT JOIN category c ON p.cate_id = c.id WHERE owner_id = ?
     `;
-  sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   let id = ownerId ? ownerId : userId;
-  let value = [id];
+  value.push(parseInt(id));
+  if (!!status) {
+    sql += ` AND  p.status = ? `;
+    value.push(parseInt(status));
+  }
+  sql += ` GROUP BY p.id ORDER BY p.create_time DESC,p_img.create_time ASC`;
   return query(sql, value);
 };
 // 查询产品分类

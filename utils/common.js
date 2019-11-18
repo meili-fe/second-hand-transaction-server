@@ -10,7 +10,6 @@ const ALLOWPAGE = [
   '/koa-api/product/allType',
   '/koa-api/product/list',
   '/koa-api/product/upload',
-  '/koa-api/product/productByUser',
   '/koa-api/product/productById',
   '/koa-page/checkPro',
   '/koa-api/product/changeStatus',

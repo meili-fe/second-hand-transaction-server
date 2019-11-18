@@ -12,8 +12,9 @@ const sequelize = new Sequelize(config.database.DATABASE, config.database.USERNA
     min: 0,
     idle: 30000,
   },
+  timezone: '+08:00',
 });
-const query = function(sql, values, model) {
+const query = function(sql, values = [], model) {
   return new Promise((resolve, reject) => {
     sequelize
       .query(sql, {

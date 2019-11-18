@@ -9,7 +9,7 @@ const router = new Router({
 
 // 添加留言
 router.post('/add', async (ctx, next) => {
-  const { parentId, proId, replayId, userId, message } = ctx.request.body;
+  let { parentId, proId, replayId, userId, message, type } = ctx.request.body;
   if (!proId) {
     ctx.body = Utils.formatError({ message: '商品id不能为空' });
     return;
@@ -18,7 +18,11 @@ router.post('/add', async (ctx, next) => {
     ctx.body = Utils.formatError({ message: '留言不能为空' });
     return;
   }
-  const params = { parentId, proId, replayId, userId, message };
+  if (!type) {
+    // 默认是给商品留言
+    type = 0;
+  }
+  const params = { parentId, proId, replayId, userId, message, type };
   await messageDTO.addMessage(params).then(async res => {
     ctx.body = Utils.formatSuccess('添加成功');
   });
@@ -26,12 +30,16 @@ router.post('/add', async (ctx, next) => {
 
 // 查询留言
 router.post('/getMsgBoard', async (ctx, next) => {
-  const { proId } = ctx.request.body;
+  let { proId, type } = ctx.request.body;
   if (!proId) {
     ctx.body = Utils.formatError({ message: '商品id不能为空' });
     return;
   }
-  await messageDTO.getAllByPro({ proId }).then(async res => {
+  if (!type) {
+    // 默认是给商品留言
+    type = 0;
+  }
+  await messageDTO.getAllByPro({ proId, type }).then(async res => {
     // 查询当前商品下所有留言 => 转换成子树结构
     let firstLevel = [];
     let children = [];

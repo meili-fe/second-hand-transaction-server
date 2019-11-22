@@ -17,6 +17,24 @@ router.post('/login', async (ctx, next) => {
   // session key， openid
   ctx.body = Utils.formatSuccess({ token });
 });
+//修改用户数据 更新用户
+router.post('/update', async (ctx, next) => {
+  let { userId, name, sex, contact, team, location } = ctx.request.body || {};
+  if (!userId) {
+    ctx.body = Utils.formatParamError('用户id为空');
+    return;
+  }
+  await userDTO.modifyUserName({ userId, sex, contact, team, location }).then(res => {
+    ctx.body = Utils.formatSuccess();
+  });
+});
+
+router.get('/getById', async (ctx, next) => {
+  const userId = ctx.request.body.userId;
+  await userDTO.findUserByid(userId).then(res => {
+    ctx.body = Utils.formatSuccess(res[0]);
+  });
+});
 
 //查询用户
 router.post('/list', async (ctx, next) => {
@@ -35,18 +53,11 @@ router.post('/list', async (ctx, next) => {
     }
   });
 });
-//修改用户数据
-router.post('/update', async (ctx, next) => {
-  let params = ctx.request.body || {};
-  await userDTO.modifyUserName(params).then(res => {
-    let insertId = res;
-    ctx.body = Utils.formatSuccess();
-  });
-});
+
 //插入用户
 router.post('/add', async (ctx, next) => {
-  let { user_name } = ctx.request.body || {};
-  let oUser = await userDTO.findUserByName(user_name);
+  let { name } = ctx.request.body || {};
+  let oUser = await userDTO.findUserByName(name);
   if (oUser.length == 0) {
     await userDTO.insertUser(ctx.request.body).then(res => {
       ctx.body = Utils.formatSuccess();

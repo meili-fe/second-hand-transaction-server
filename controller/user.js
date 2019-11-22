@@ -2,11 +2,11 @@ const { query } = require('../db');
 let findUser = function(params) {
   let { name, pageSize, page } = params;
   let offset = (page - 1) * pageSize;
-  let sql = `SELECT user.id,user.user_name,user.user_email,upload.file_name,upload.file_path FROM user  LEFT JOIN upload ON user.id = upload.user_id `;
+  let sql = `SELECT user.id,user.na me,user.user_email,upload.file_name,upload.file_path FROM user  LEFT JOIN upload ON user.id = upload.user_id `;
 
   if (name) {
     offset = 0;
-    sql += ` WHERE user.user_name = ?  `;
+    sql += ` WHERE user.name = ?  `;
   }
   sql += `ORDER BY user.create_time DESC  limit ${offset},${pageSize} `;
 
@@ -22,10 +22,14 @@ let findUserCount = function(params) {
   let value = [id];
   return query(sql, value);
 };
-let findUserByName = function(user_name) {
-  let sql = 'SELECT * FROM user  WHERE user_name = ?';
-  let value = [user_name];
+let findUserByName = function(name) {
+  let sql = 'SELECT * FROM user  WHERE name = ?';
+  let value = [name];
   return query(sql, value);
+};
+let findUserByid = function(id) {
+  let sql = `SELECT * FROM user  WHERE id = ${id}`;
+  return query(sql);
 };
 let findUserByOpenId = function(openId) {
   let sql = 'SELECT * FROM user  WHERE open_id = ?';
@@ -46,9 +50,9 @@ let deleteUserById = function(params) {
   return query(sql, value);
 };
 let modifyUserName = function(params) {
-  let { id, user_name, user_email } = params;
-  let sql = 'UPDATE user SET user_name = ?,user_email=? WHERE id=?',
-    value = [user_name, user_email, id];
+  let { userId, sex, contact, team, location } = params;
+  let sql = `UPDATE user SET sex = ?, contact = ? , team = ? , location = ? WHERE id=${userId}`;
+  value = [sex, contact, team, location];
   return query(sql, value);
 };
 let findUserImgCount = function(user_id) {
@@ -104,4 +108,5 @@ module.exports = {
   uploadUserImg,
   findProOrderBySaled,
   findProOrderByRelation,
+  findUserByid,
 };

@@ -80,7 +80,7 @@ let insertPurchase = function(params) {
 
 // 修改修购信息
 let updatePurchase = function(params) {
-  let { title, status, lowPrice, highPrice, description, id } = params;
+  let { title, status = 0, lowPrice, highPrice, description, id } = params;
   let sql = 'UPDATE purchase SET title=?,status=?,low_price=?,high_price=?,description=? WHERE id=?',
     value = [title, status, lowPrice, highPrice, description, id];
   return query(sql, value);

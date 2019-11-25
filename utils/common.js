@@ -22,6 +22,5 @@ const ALLOWPAGE = [
   '/koa-api/purchase/list',
   '/koa-api/purchase/purchaseById',
   '/koa-api/purchase/purchaseByUser',
-  '/koa-api/purchase/update',
 ];
 module.exports = { COMMON_STATUS, ALLOWPAGE };

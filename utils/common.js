@@ -20,7 +20,6 @@ const ALLOWPAGE = [
   '/koa-page/cateList',
   '/koa-api/product/configs',
   '/koa-api/purchase/list',
-  '/koa-api/purchase/add',
   '/koa-api/purchase/purchaseById',
   '/koa-api/purchase/purchaseByUser',
   '/koa-api/purchase/update',

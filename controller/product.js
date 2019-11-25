@@ -105,7 +105,7 @@ let findProductById = function(params) {
   let { id } = params;
   let sql = `SELECT 
     p.id,p.owner_id,p.title,p.location,p.price,p.contact,p.description,p.original, p.team,p.status,p.create_time,p.update_time,p.cate_id,
-    c.name category_name,u.name username,u.img_url imgUrl,
+    c.name category_name,u.name username,u.img_url imgUrl,u.sex,u.contact,u.team,u.location ,
     GROUP_CONCAT( p_img.img_url ) AS img_list
     FROM product p
     LEFT JOIN product_img p_img ON p.id = p_img.pro_id 

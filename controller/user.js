@@ -28,7 +28,7 @@ let findUserByName = function(name) {
   return query(sql, value);
 };
 let findUserByid = function(id) {
-  let sql = `SELECT * FROM user  WHERE id = ${id}`;
+  let sql = `SELECT  id,open_id,name,update_time,create_time,img_url,team,location, ifnull(contact,'') contact FROM user  WHERE id = ${id}`;
   return query(sql);
 };
 let findUserByOpenId = function(openId) {

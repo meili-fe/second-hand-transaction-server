@@ -39,10 +39,18 @@ router.post('/list', async (ctx, next) => {
       isShowList: true,
     })
   );
+  let team_config = await productDTO.getConfigByKey('team');
+  const teams = JSON.parse(team_config[0].biz_value);
+
   await productDTO.findProduct(params).then(async res => {
     const promises = res.map(async item => {
       let collectCount = await relationDTO.getCountById({ type: 0, id: item.id });
       let praiseCount = await relationDTO.getCountById({ type: 1, id: item.id });
+      teams.map(t => {
+        if (t.value == item.team) {
+          item.teamName = t.name;
+        }
+      });
       return Object.assign(
         {
           collectCount: collectCount[0].count,

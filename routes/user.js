@@ -24,6 +24,10 @@ router.post('/update', async (ctx, next) => {
     ctx.body = Utils.formatParamError('用户id为空');
     return;
   }
+  if (!contact) {
+    ctx.body = Utils.formatParamError('请输入联系方式');
+    return;
+  }
   await userDTO.modifyUserName({ userId, sex, contact, team, location }).then(res => {
     ctx.body = Utils.formatSuccess();
   });

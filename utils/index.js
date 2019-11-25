@@ -132,6 +132,7 @@ let util = {
           key: skey,
           openId: body.openid,
         };
+        let showInfo = {};
         // 判断用户是否存在，不存在则查询用户信息 并 落库
         const user = await userDTO.findUserByOpenId(data.openId);
         if (!user || user.length <= 0) {
@@ -139,16 +140,37 @@ let util = {
           await userDTO.insertUser(param).then(res => {
             const insertId = res;
             data.userId = insertId;
+            showInfo = {
+              userId: insertId,
+              name,
+              imgUrl,
+              sex,
+              contact: '',
+              team: 0,
+              location: 0,
+            };
           });
         } else {
-          data.userId = user[0].id;
+          const loginUser = user[0];
+          data.userId = loginUser.id;
+          showInfo = {
+            userId: loginUser.id,
+            name: loginUser.name,
+            imgUrl: loginUser.imgUrl,
+            sex: loginUser.sex,
+            contact: loginUser.contact,
+            team: loginUser.team,
+            location: loginUser.location,
+          };
         }
         const userInfo = this.encrypt(JSON.stringify(data));
+        showInfo_Bs64 = Buffer.from(JSON.stringify(showInfo)).toString('base64');
+
         // 过期时间校验 5 小时
         const expireTime = new Date().getTime() + 5 * 60 * 60 * 1000;
         const result = {
           userInfo,
-          userId: data.userId,
+          showInfo: showInfo_Bs64,
           expireTime,
         };
         resolve(result);

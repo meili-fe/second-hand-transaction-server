@@ -44,7 +44,7 @@ let findPurchaseById = function(params) {
   let { id } = params;
   let sql = `SELECT 
     p.id,p.owner_id userId,p.title,p.status,p.low_price lowPrice,p.high_price highPrice,p.description,p.create_time createTime,p.update_time updateTime, 
-    u.name userName,u.img_url imgUrl
+    u.name userName,u.contact,u.img_url imgUrl
     FROM purchase p
     LEFT JOIN user u ON u.id = p.owner_id WHERE p.id = ?
     `;

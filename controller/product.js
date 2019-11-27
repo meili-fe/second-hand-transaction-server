@@ -73,7 +73,7 @@ let findProductByUser = function(params) {
   console.log(params);
   let value = [];
   let sql = `SELECT 
-    p.id,p.title,p.price,p.description,p.status,p.original,p.create_time,p.update_time,
+    p.id,p.id proId, p.title,p.price,p.description,p.status,p.original,p.create_time,p.update_time,
     c.name category_name,
     GROUP_CONCAT( p_img.img_url ) AS img_list     
     FROM product p

@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-koa": "^2.9.7",
+    "apollo-server-koa": "^2.14.2",
     "async-busboy": "^0.7.0",
     "cls-hooked": "^4.2.2",
     "fs": "0.0.1-security",
